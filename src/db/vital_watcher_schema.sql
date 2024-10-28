@@ -77,12 +77,12 @@ CREATE TABLE ALERTS (
 
 -- Vital Thresholds table without the CHECK constraint
 CREATE TABLE VITAL_THRESHOLDS (
-                                  Thresholds_ID      INT AUTO_INCREMENT NOT NULL,
-                                  Patient_ID         INT                NOT NULL,
-                                  Vital_type         VARCHAR(50)        NOT NULL,
-                                  Minimum_value      DECIMAL(5, 2)      NOT NULL CHECK (Minimum_value > 0),
-                                  Maximum_value      DECIMAL(5, 2)      NOT NULL,
-                                  Time_stamp         DATETIME           NOT NULL,
+                                  Thresholds_ID       INT AUTO_INCREMENT NOT NULL,
+                                  Patient_ID          INT                NOT NULL,
+                                  Vital_type          VARCHAR(50)        NOT NULL,
+                                  Minimum_value       DECIMAL(5, 2)      NOT NULL CHECK (Minimum_value > 0),
+                                  Maximum_value       DECIMAL(5, 2)      NOT NULL,
+                                  Time_stamp          DATETIME           NOT NULL,
                                   PRIMARY KEY (Thresholds_ID),
                                   FOREIGN KEY (Patient_ID) REFERENCES PATIENTS(Patient_ID)
                                       ON DELETE CASCADE
@@ -154,3 +154,19 @@ CREATE TABLE TEST_RESULTS (
                                   ON UPDATE CASCADE
 );
 
+-- Patch Device table
+CREATE TABLE PATCH_DEVICE (
+                              Device_ID            INT AUTO_INCREMENT NOT NULL,
+                              Patient_ID           INT                NOT NULL,
+                              Vital_Status         VARCHAR(20)        NOT NULL CHECK (Vital_Status IN ('Normal', 'Critical', 'Warning')),
+                              Patch_Status         VARCHAR(20)        NOT NULL CHECK (Patch_Status IN ('Active', 'Inactive', 'Maintenance')),
+                              Patient_address      VARCHAR(100)       NOT NULL,
+                              Thresholds_ID        INT                DEFAULT NULL,
+                              PRIMARY KEY (Device_ID),
+                              FOREIGN KEY (Patient_ID) REFERENCES PATIENTS(Patient_ID)
+                                  ON DELETE CASCADE
+                                  ON UPDATE CASCADE,
+                              FOREIGN KEY (Thresholds_ID) REFERENCES VITAL_THRESHOLDS(Thresholds_ID)
+                                  ON DELETE SET NULL
+                                  ON UPDATE CASCADE
+);
