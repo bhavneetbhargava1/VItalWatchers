@@ -24,114 +24,114 @@ The **Vital Watchers** database schema supports the following core functionaliti
 Stores core data for each patient, including name, age, phone number, medical history, and address.
 
 - **Key Attributes**:
-    - `Patient_ID`: Primary key.
-    - `First_name`, `Last_name`, `Age`, `Gender`: Personal details.
-    - `Patient_phone_num`, `Email`: Contact details.
-    - `Medical_history`, `Status`, `Patient_address`: Medical details.
+  - `Patient_ID`: Primary key.
+  - `First_name`, `Last_name`, `Age`, `Gender`: Personal details.
+  - `Patient_phone_num`, `Email`: Contact details.
+  - `Medical_history`, `Status`, `Patient_address`: Medical details.
 - **Constraints**:
-    - `CHECK` constraints to validate age range, gender, and patient status.
+  - `CHECK` constraints to validate age range, gender, and patient status.
 
 ### **2. Providers Table**
 
 Stores details about healthcare providers who interact with patients or manage their data.
 
 - **Key Attributes**:
-    - `Provider_ID`: Primary key.
-    - `First_name`, `Last_name`, `Provider_phone_no`: Provider details.
+  - `Provider_ID`: Primary key.
+  - `First_name`, `Last_name`, `Provider_phone_no`: Provider details.
 
 ### **3. Health Summary Table**
 
 Records information related to the patient's health summary, including vital signs, treatments, and provider notes.
 
 - **Key Attributes**:
-    - `Health_Summary_ID`: Primary key.
-    - `Patient_ID`, `Provider_ID`: Foreign keys linking to `PATIENTS` and `PROVIDERS`.
-    - `Vital_signs`, `Treatments`, `Provider_notes`: Summary details.
+  - `Health_Summary_ID`: Primary key.
+  - `Patient_ID`, `Provider_ID`: Foreign keys linking to `PATIENTS` and `PROVIDERS`.
+  - `Vital_signs`, `Treatments`, `Provider_notes`: Summary details.
 - **Constraints**:
-    - Foreign key constraints with `ON DELETE CASCADE` and `ON UPDATE CASCADE`.
+  - Foreign key constraints with `ON DELETE CASCADE` and `ON UPDATE CASCADE`.
 
 ### **4. Vitals Table**
 
 Tracks the patient's vital signs, such as blood pressure, heart rate, body temperature, oxygen saturation, and breathing rate.
 
 - **Key Attributes**:
-    - `VITAL_ID`: Primary key.
-    - `PATIENT_ID`: Foreign key linking to `PATIENTS`.
-    - Various vitals, including `BLOOD_PRESSURE`, `HEART_RATE`, `BODY_TEMPERATURE`, etc.
+  - `VITAL_ID`: Primary key.
+  - `PATIENT_ID`: Foreign key linking to `PATIENTS`.
+  - Various vitals, including `BLOOD_PRESSURE`, `HEART_RATE`, `BODY_TEMPERATURE`, etc.
 - **Constraints**:
-    - `CHECK` constraints to validate realistic ranges for each vital.
+  - `CHECK` constraints to validate realistic ranges for each vital.
 
 ### **5. Alerts Table**
 
 Stores alerts triggered by abnormal patient vitals and flags if the alert has been resolved.
 
 - **Key Attributes**:
-    - `ALERT_ID`: Primary key.
-    - `PATIENT_ID`: Foreign key linking to `PATIENTS`.
-    - `ALERT_TYPE`, `TIME_STAMP`, `RESOLVED`: Alert details.
+  - `ALERT_ID`: Primary key.
+  - `PATIENT_ID`: Foreign key linking to `PATIENTS`.
+  - `ALERT_TYPE`, `TIME_STAMP`, `RESOLVED`: Alert details.
 - **Constraints**:
-    - `CHECK` constraint to validate alert types (`LOW`, `MEDIUM`, `HIGH`).
+  - `CHECK` constraint to validate alert types (`LOW`, `MEDIUM`, `HIGH`).
 
 ### **6. Vital Thresholds Table**
 
 Defines threshold values for each vital, used to trigger alerts when thresholds are breached.
 
 - **Key Attributes**:
-    - `Thresholds_ID`: Primary key.
-    - `Patient_ID`, `Provider_ID`: Foreign keys linking to `PATIENTS` and `PROVIDERS`.
-    - `Vital_type`, `Minimum_value`, `Maximum_value`, `Time_stamp`: Threshold settings.
+  - `Thresholds_ID`: Primary key.
+  - `Patient_ID`, `Provider_ID`: Foreign keys linking to `PATIENTS` and `PROVIDERS`.
+  - `Vital_type`, `Minimum_value`, `Maximum_value`, `Time_stamp`: Threshold settings.
 - **Constraints**:
-    - `CHECK` constraints on `Minimum_value`.
-    - Trigger to ensure `Maximum_value` is greater than `Minimum_value`.
+  - `CHECK` constraints on `Minimum_value`.
+  - Trigger to ensure `Maximum_value` is greater than `Minimum_value`.
 
 ### **7. Emergency Dispatch Table**
 
 Tracks emergency dispatch information, including dispatch and arrival times, status, and notes.
 
 - **Key Attributes**:
-    - `Dispatch_ID`: Primary key.
-    - `Patient_ID`, `Alert_ID`: Foreign keys linking to `PATIENTS` and `ALERTS`.
-    - `Dispatch_time`, `Arrival_time`, `Status`, `Notes`, `Patient_address`: Dispatch details.
+  - `Dispatch_ID`: Primary key.
+  - `Patient_ID`, `Alert_ID`: Foreign keys linking to `PATIENTS` and `ALERTS`.
+  - `Dispatch_time`, `Arrival_time`, `Status`, `Notes`, `Patient_address`: Dispatch details.
 - **Constraints**:
-    - `CHECK` constraint on `Status` (e.g., `Pending`, `Dispatched`, `Arrived`, `Resolved`).
+  - `CHECK` constraint on `Status` (e.g., `Pending`, `Dispatched`, `Arrived`, `Resolved`).
 
 ### **8. Messages Table**
 
 Stores messages sent by providers, including the message content and sender information.
 
 - **Key Attributes**:
-    - `Message_ID`: Primary key.
-    - `Sender_ID`: Foreign key linking to `PROVIDERS`.
-    - `Message_Content`, `Time_Sent`: Message details.
+  - `Message_ID`: Primary key.
+  - `Sender_ID`: Foreign key linking to `PROVIDERS`.
+  - `Message_Content`, `Time_Sent`: Message details.
 
 ### **9. User Authorization Table**
 
-Tracks authorization details for users linked to patients, handling activation status and unique user codes.
+Tracks authorization details for users linked to patients, handling activation status and unique user codes. Links directly to patient records rather than storing email or phone number directly, ensuring data consistency.
 
 - **Key Attributes**:
-    - `User_ID`: Primary key.
-    - `Patient_ID`: Foreign key linking to `PATIENTS`.
-    - `User_code`, `Activation`: Authorization details.
+  - `User_ID`: Primary key.
+  - `Patient_ID`: Foreign key linking to `PATIENTS`.
+  - `User_code`, `Activation`: Authorization details.
 
 ### **10. Test Results Table**
 
 Records results of medical tests performed on patients, with links to the provider and any associated alert.
 
 - **Key Attributes**:
-    - `Test_Result_ID`: Primary key.
-    - `Patient_ID`, `Provider_ID`, `Alert_ID`: Foreign keys linking to `PATIENTS`, `PROVIDERS`, and `ALERTS`.
-    - `Result`, `Test_date`: Test result details.
+  - `Test_Result_ID`: Primary key.
+  - `Patient_ID`, `Provider_ID`, `Alert_ID`: Foreign keys linking to `PATIENTS`, `PROVIDERS`, and `ALERTS`.
+  - `Result`, `Test_date`: Test result details.
 - **Constraints**:
-    - Default `Result` set to `Pending`.
+  - Default `Result` set to `Pending`.
 
 ### **11. Patch Device Table**
 
 Tracks the status of devices or patches used to monitor patient vitals.
 
 - **Key Attributes**:
-    - `Device_ID`: Primary key.
-    - `Patient_ID`, `Thresholds_ID`: Foreign keys linking to `PATIENTS` and `VITAL_THRESHOLDS`.
-    - `Vital_Status`, `Patch_Status`: Device operational status.
+  - `Device_ID`: Primary key.
+  - `Patient_ID`, `Thresholds_ID`: Foreign keys linking to `PATIENTS` and `VITAL_THRESHOLDS`.
+  - `Vital_Status`, `Patch_Status`: Device operational status.
 
 ---
 
@@ -146,3 +146,19 @@ Tracks the status of devices or patches used to monitor patient vitals.
 4. **ON DELETE/ON UPDATE Actions**: Foreign keys are designed with `ON DELETE` and `ON UPDATE` actions to handle cascading deletions and updates, preserving data integrity when rows in referenced tables are modified.
 
 ---
+
+## ***Sample Data***
+
+Each table in this schema is populated with sample data that demonstrates practical use cases of the system. For instance:
+
+- **PATIENTS**: Contains details on each patient, linking with other tables to track health summaries, vitals, alerts, and authorizations.
+- **HEALTH_SUMMARY** and **VITALS**: Document patient health metrics and observations over time, directly impacting the generation of alerts.
+- **ALERTS and EMERGENCY_DISPATCH**: Capture real-time responses to health anomalies, showcasing emergency response workflows.
+- **USER_AUTHORIZATION and TEST_RESULTS**: Manage user access to patient data and record diagnostic results associated with providers and alerts.
+
+This schema enables complex queries to provide insights into patient health, emergency response times, and device efficacy, crucial for proactive patient care and efficient resource allocation.
+
+---
+
+## ***SQL Queries***
+
