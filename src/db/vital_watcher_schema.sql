@@ -79,6 +79,7 @@ CREATE TABLE ALERTS (
 CREATE TABLE VITAL_THRESHOLDS (
                                   Thresholds_ID       INT AUTO_INCREMENT NOT NULL,
                                   Patient_ID          INT                NOT NULL,
+                                  Provider_ID         INT                NULL, -- Allow NULL for ON DELETE SET NULL to work
                                   Vital_type          VARCHAR(50)        NOT NULL,
                                   Minimum_value       DECIMAL(5, 2)      NOT NULL CHECK (Minimum_value > 0),
                                   Maximum_value       DECIMAL(5, 2)      NOT NULL,
@@ -86,6 +87,9 @@ CREATE TABLE VITAL_THRESHOLDS (
                                   PRIMARY KEY (Thresholds_ID),
                                   FOREIGN KEY (Patient_ID) REFERENCES PATIENTS(Patient_ID)
                                       ON DELETE CASCADE
+                                      ON UPDATE CASCADE,
+                                  FOREIGN KEY (Provider_ID) REFERENCES PROVIDERS(Provider_ID)
+                                      ON DELETE SET NULL
                                       ON UPDATE CASCADE
 );
 
@@ -108,12 +112,17 @@ DELIMITER ;
 -- Emergency Dispatch table
 CREATE TABLE EMERGENCY_DISPATCH (
                                     Dispatch_ID        INT AUTO_INCREMENT NOT NULL,
+                                    Patient_ID         INT                NOT NULL,
                                     Alert_ID           INT                NOT NULL,
                                     Dispatch_time      DATETIME           NOT NULL,
                                     Arrival_time       DATETIME           DEFAULT NULL,
                                     Status             VARCHAR(20)        NOT NULL CHECK (Status IN ('Pending', 'Dispatched', 'Arrived', 'Resolved')),
                                     Notes              TEXT,
+                                    Patient_address    VARCHAR(100)       NOT NULL,
                                     PRIMARY KEY (Dispatch_ID),
+                                    FOREIGN KEY (Patient_ID) REFERENCES PATIENTS(Patient_ID)
+                                        ON DELETE CASCADE
+                                        ON UPDATE CASCADE,
                                     FOREIGN KEY (Alert_ID) REFERENCES ALERTS(Alert_ID)
                                         ON DELETE CASCADE
                                         ON UPDATE CASCADE
@@ -134,25 +143,36 @@ CREATE TABLE MESSAGES (
 -- User Authorization table
 CREATE TABLE USER_AUTHORIZATION (
                                     User_ID            INT AUTO_INCREMENT NOT NULL,
-                                    Email              VARCHAR(100)       NOT NULL UNIQUE,
-                                    Pno                VARCHAR(15)        DEFAULT NULL,
+                                    Patient_ID         INT                NOT NULL,
                                     User_code          VARCHAR(10)        NOT NULL,
                                     Activation         BOOLEAN            DEFAULT FALSE,
-                                    PRIMARY KEY (User_ID)
+                                    PRIMARY KEY (User_ID),
+                                    FOREIGN KEY (Patient_ID) REFERENCES PATIENTS(Patient_ID)
+                                        ON DELETE CASCADE
+                                        ON UPDATE CASCADE
 );
+
 
 -- Test Results table
 CREATE TABLE TEST_RESULTS (
                               Test_Result_ID     INT AUTO_INCREMENT NOT NULL,
                               Patient_ID         INT                NOT NULL,
-                              Test_type          VARCHAR(50)        NOT NULL,
+                              Provider_ID        INT                DEFAULT NULL,
+                              Alert_ID           INT                DEFAULT NULL,
                               Result             VARCHAR(100)       DEFAULT 'Pending',
                               Test_date          DATE               NOT NULL,
                               PRIMARY KEY (Test_Result_ID),
                               FOREIGN KEY (Patient_ID) REFERENCES PATIENTS(Patient_ID)
                                   ON DELETE CASCADE
+                                  ON UPDATE CASCADE,
+                              FOREIGN KEY (Provider_ID) REFERENCES PROVIDERS(Provider_ID)
+                                  ON DELETE SET NULL
+                                  ON UPDATE CASCADE,
+                              FOREIGN KEY (Alert_ID) REFERENCES ALERTS(Alert_ID)
+                                  ON DELETE SET NULL
                                   ON UPDATE CASCADE
 );
+
 
 -- Patch Device table
 CREATE TABLE PATCH_DEVICE (
