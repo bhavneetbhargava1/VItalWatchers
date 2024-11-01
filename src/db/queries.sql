@@ -65,6 +65,28 @@ WHERE
 ORDER BY
     a.TIME_STAMP DESC;
 
+-- Query 4: Uses a FULL OUTER JOIN
+-- purpose: This query retrieves a list of all patients along with the status of any associated patch devices.
+-- This includes patients who may not have a patch device and patch devices that may not be assigned to any patient.
+-- Summary of result: It shows each patient’s ID, first name, and last name, along with their associated Patch_Status and Vital_Status.
+
+SELECT pname.Patient_ID,
+       pname.First_name,
+       pname.Last_name,
+       pd.Patch_Status,
+       pd.Vital_Status
+FROM PATIENTS pname
+LEFT JOIN PATCH_DEVICE pd ON pname.Patient_ID = pd.Patient_ID
+
+UNION
+SELECT pname.Patient_ID,
+       pname.First_name,
+       pname.Last_name,
+       pd.Patch_Status,
+       pd.Vital_Status
+FROM PATIENTS pname
+RIGHT JOIN PATCH_DEVICE pd ON pname.Patient_ID = pd.Patient_ID;
+
 
 -- Query 7: Create non-trivial SQL query that uses two tables in FROM clause
 -- Purpose: This query retrieves a list of patients who have received recent alerts,
