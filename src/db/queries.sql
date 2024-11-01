@@ -7,3 +7,4 @@ SELECT p.Patient_ID, CONCAT(p.First_name, ' ', p.Last_name) AS Patient_Name, h.D
 FROM PATIENTS p
          JOIN HEALTH_SUMMARY h ON p.Patient_ID = h.Patient_ID
          JOIN PROVIDERS pr ON h.Provider_ID = pr.Provider_ID;
+
