@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class VitalWatchersDB {
 
     // Define database connection parameters
-    private static final String URL = "jdbc:mysql://localhost:3306/VitalWatchers";
+    private static final String URL = "jdbc:mysql://localhost:3306/VitalWatchers?useSSL=false";
     private static final String USER = "root";
     private static final String PASSWORD = "20020353";
 
@@ -20,6 +20,8 @@ public class VitalWatchersDB {
              PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
+            System.out.println("Connected to database!");
+
             // Print results from the query execution
             while (resultSet.next()) {
                 System.out.println("Name: " + resultSet.getString("First_name") + " " + resultSet.getString("Last_name"));
@@ -29,6 +31,7 @@ public class VitalWatchersDB {
             }
 
         } catch (SQLException e) {
+            System.out.println("Connection or query failed!");
             e.printStackTrace();
         }
     }
