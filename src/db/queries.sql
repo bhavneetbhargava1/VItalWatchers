@@ -114,3 +114,53 @@ WHERE
     ALERTS.Resolved = 'F';
 
 
+-- Query 8: Create non-trivial SQL query using nine tables in FROM clause
+-- Purpose: This query retrieves detailed patient information related to their patch devices and vital signs, as well
+--          as associated alerts and healthcare provider interactions. It aggregates data to analyze each patient's health status
+--          and the responsiveness of the healthcare system. The goal is to provide a comprehensive overview of the patient’s medical
+--          situation and related activities.
+-- Summary of Result: The query returns the unique Patient_ID along with the full Patient_Name and Medical_history. It includes current
+--          readings from the patch device, vital signs such as Blood Pressure, Heart Rate, and Oxygen Saturation, as well as aggregated
+--          counts of alerts, emergency dispatches, and provider messages. Additionally, it provides average blood pressure readings, minimum
+--          oxygen saturation, and counts of test results and resolved alerts, offering a view of the patient's healthcare journey.
+SELECT
+    PATCH_DEVICE.Patient_ID,
+    CONCAT(PATIENTS.First_name, ' ', PATIENTS.Last_name) as Patient_Name,
+    PATIENTS.Medical_history,
+    PATCH_DEVICE.Vital_Status as Device_Reading,
+    PATCH_DEVICE.Patch_Status,
+    VITALS.BLOOD_PRESSURE,
+    VITALS.HEART_RATE,
+    VITALS.OXYGEN_SATURATION,
+    COUNT(DISTINCT ALERTS.Alert_ID) as Total_Alerts,
+    COUNT(DISTINCT EMERGENCY_DISPATCH.Dispatch_time) as Emergency_Dispatches,
+    COUNT(DISTINCT MESSAGES.Message_Content) as Provider_Messages,
+    AVG(VITALS.BLOOD_PRESSURE) as Avg_BP,
+    MIN(VITALS.OXYGEN_SATURATION) as Min_O2,
+    COUNT(DISTINCT TEST_RESULTS.Result) as Test_Count,
+    GROUP_CONCAT(DISTINCT TEST_RESULTS.Result) as Test_Outcomes,
+    COUNT(DISTINCT PROVIDERS.Provider_ID) as Providers_Involved,
+    SUM(ALERTS.RESOLVED = 'T') as Resolved_Alerts
+FROM PATCH_DEVICE
+         JOIN PATIENTS ON PATCH_DEVICE.Patient_ID = PATIENTS.Patient_ID
+         JOIN VITALS ON PATIENTS.Patient_ID = VITALS.PATIENT_ID
+         LEFT JOIN ALERTS ON PATCH_DEVICE.Patient_ID = ALERTS.PATIENT_ID
+         LEFT JOIN EMERGENCY_DISPATCH ON ALERTS.Alert_ID = EMERGENCY_DISPATCH.Alert_ID
+         LEFT JOIN MESSAGES ON PATIENTS.Patient_ID = MESSAGES.Sender_ID
+         LEFT JOIN TEST_RESULTS ON PATIENTS.Patient_ID = TEST_RESULTS.Patient_ID
+         LEFT JOIN HEALTH_SUMMARY ON PATIENTS.Patient_ID = HEALTH_SUMMARY.Patient_ID
+         LEFT JOIN PROVIDERS ON HEALTH_SUMMARY.Provider_ID = PROVIDERS.Provider_ID
+GROUP BY
+    PATCH_DEVICE.Patient_ID,
+    PATIENTS.First_name,
+    PATIENTS.Last_name,
+    PATIENTS.Medical_history,
+    PATCH_DEVICE.Vital_Status,
+    PATCH_DEVICE.Patch_Status,
+    VITALS.BLOOD_PRESSURE,
+    VITALS.HEART_RATE,
+    VITALS.OXYGEN_SATURATION
+HAVING COUNT(DISTINCT ALERTS.Alert_ID) > 0
+ORDER BY
+    COUNT(DISTINCT EMERGENCY_DISPATCH.Dispatch_time) DESC,
+    MIN(VITALS.OXYGEN_SATURATION) ASC;
