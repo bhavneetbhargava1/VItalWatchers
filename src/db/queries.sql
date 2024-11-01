@@ -20,3 +20,16 @@ WHERE h.Date IN (
     WHERE a.ALERT_TYPE = 'HIGH'
 )
 GROUP BY Patient_Name;
+
+-- Query 3: Correlated Nested Query with Aliasing
+-- Purpose: Find devices that are actively monitoring patients with critical health summaries.
+-- Expected Result: Lists device IDs and statuses for devices linked to patients with critical health summaries.
+SELECT pd.Device_ID, pd.Patch_Status
+FROM PATCH_DEVICE pd
+WHERE EXISTS (
+    SELECT 1
+    FROM HEALTH_SUMMARY hs
+    WHERE hs.Patient_ID = pd.Patient_ID
+      AND hs.Vital_signs = 'Critical'
+);
+
