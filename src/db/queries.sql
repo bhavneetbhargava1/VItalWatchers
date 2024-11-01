@@ -1,3 +1,5 @@
+USE VitalWatchers;
+
 -- Query 1: Triple Table Join
 -- Purpose: Retrieve patient details, their health summary, and provider notes.
 -- Expected Result: Displays each patient's name, date of health summary, and provider notes.
