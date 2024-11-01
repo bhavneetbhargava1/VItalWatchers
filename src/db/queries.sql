@@ -8,18 +8,34 @@ FROM PATIENTS p
          JOIN HEALTH_SUMMARY h ON p.Patient_ID = h.Patient_ID
          JOIN PROVIDERS pr ON h.Provider_ID = pr.Provider_ID;
 
--- Query 2: Nested Query with IN and GROUP BY
--- Purpose: List patients monitored on dates when any critical alert was raised.
--- Expected Result: Lists each patient and the count of their health summaries on critical alert dates.
-SELECT CONCAT(p.First_name, ' ', p.Last_name) AS Patient_Name, COUNT(h.Date) AS Health_Summary_Count
-FROM PATIENTS p
-         JOIN HEALTH_SUMMARY h ON p.Patient_ID = h.Patient_ID
-WHERE h.Date IN (
-    SELECT a.TIME_STAMP
-    FROM ALERTS a
-    WHERE a.ALERT_TYPE = 'HIGH'
+-- SQL Query 2: Correlated Nested Query with Proper Aliasing
+-- Purpose: Retrieve patients who are 'Under Treatment' or 'Sick' and have an unresolved high-level alert with an active patch device.
+
+SELECT DISTINCT
+    p.First_name,                   -- Patient's first name
+    p.Last_name,                    -- Patient's last name
+    p.Status,                       -- Patient's health status ('Under Treatment' or 'Sick')
+    a.ALERT_TYPE,                   -- Alert type (HIGH in this case)
+    a.TIME_STAMP                    -- Timestamp of the alert
+FROM
+    PATIENTS AS p                   -- Alias 'p' for the PATIENTS table
+        JOIN ALERTS AS a ON p.Patient_ID = a.PATIENT_ID
+WHERE
+    p.Status IN ('Under Treatment', 'Sick')      -- Filter for patients with specific health statuses
+  AND a.ALERT_TYPE = 'HIGH'                    -- Only consider high-level alerts
+  AND a.RESOLVED = 'F'                         -- Only include unresolved alerts
+  AND EXISTS (
+    SELECT 1
+    FROM PATCH_DEVICE AS pd
+    WHERE pd.Patient_ID = p.Patient_ID
+      AND pd.Patch_Status = 'Active'         -- Ensure the patient's patch device is active
 )
-GROUP BY Patient_Name;
+ORDER BY
+    a.TIME_STAMP DESC;                           -- Order by the most recent alert timestamps
+
+
+
+
 
 -- Query 3: Correlated Nested Query with Aliasing
 -- Purpose: Find devices that are actively monitoring patients with critical health summaries.
