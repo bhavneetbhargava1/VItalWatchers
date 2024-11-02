@@ -88,7 +88,7 @@ FROM PATIENTS pname
 RIGHT JOIN PATCH_DEVICE pd ON pname.Patient_ID = pd.Patient_ID;
 
 
--- Query 7: Create non-trivial SQL query that uses two tables in FROM clause
+-- Query 7: Create non-trivial SQL query that uses four tables in FROM clause
 -- Purpose: This query retrieves a list of patients who have received recent alerts,
 --          along with details about the specific alert and the associated provider.
 -- Summary of Result: It shows the Patient's name, alert type, time of the alert, provider's name,
