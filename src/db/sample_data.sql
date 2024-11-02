@@ -33,6 +33,7 @@ VALUES
     ('Dr. Maria', 'Rodriguez', '555-8899'),
     ('Dr. Andrew', 'Kim', '555-0011');
 
+
 -- Insert sample data into HEALTH_SUMMARY table
 INSERT INTO HEALTH_SUMMARY (Patient_ID, Date, Vital_signs, Treatments, Provider_notes, Provider_ID)
 VALUES
@@ -92,32 +93,33 @@ VALUES
 
 
 -- Insert sample data into VITAL_THRESHOLDS table
-INSERT INTO VITAL_THRESHOLDS (Vital_type, Minimum_value, Maximum_value)
+INSERT INTO VITAL_THRESHOLDS (Vital_category, Vital_level, Minimum_value, Maximum_value)
 VALUES
-    ('Blood Pressure - Normal', 90.0, 120.0),
-    ('Blood Pressure - Elevated', 121.0, 129.0),
-    ('Blood Pressure - High', 130.0, 139.0),
-    ('Blood Pressure - Very High', 140.0, 180.0),
-    ('Blood Pressure - Critical', 181.0, 250.0),
+    ('Blood Pressure', 'Normal', 90.0, 120.0),
+    ('Blood Pressure', 'Elevated', 121.0, 129.0),
+    ('Blood Pressure', 'High', 130.0, 139.0),
+    ('Blood Pressure', 'Very High', 140.0, 180.0),
+    ('Blood Pressure', 'Critical', 181.0, 250.0),
 
-    ('Heart Rate - Normal', 60.0, 100.0),
-    ('Heart Rate - Low', 30.0, 59.9),
-    ('Heart Rate - High', 101.0, 150.0),
-    ('Heart Rate - Critical', 151.0, 200.0),
+    ('Heart Rate', 'Normal', 60.0, 100.0),
+    ('Heart Rate', 'Low', 30.0, 59.9),
+    ('Heart Rate', 'High', 101.0, 150.0),
+    ('Heart Rate', 'Critical', 151.0, 200.0),
 
-    ('Body Temperature - Normal', 97.0, 99.0),
-    ('Body Temperature - Mild Fever', 99.1, 100.4),
-    ('Body Temperature - High Fever', 100.5, 103.0),
-    ('Body Temperature - Low', 89.0, 96.9),
+    ('Body Temperature', 'Normal', 97.0, 99.0),
+    ('Body Temperature', 'Mild Fever', 99.1, 100.4),
+    ('Body Temperature', 'High Fever', 100.5, 103.0),
+    ('Body Temperature', 'Low', 89.0, 96.9),
 
-    ('Oxygen Saturation - Normal', 95.0, 100.0),
-    ('Oxygen Saturation - Low', 90.0, 94.9),
-    ('Oxygen Saturation - Critical', 80.0, 89.9),
+    ('Oxygen Saturation', 'Normal', 95.0, 100.0),
+    ('Oxygen Saturation', 'Low', 90.0, 94.9),
+    ('Oxygen Saturation', 'Critical', 80.0, 89.9),
 
-    ('Breathing Rate - Normal', 12.0, 20.0),
-    ('Breathing Rate - Low', 6.0, 11.9),
-    ('Breathing Rate - High', 20.1, 30.0),
-    ('Breathing Rate - Critical', 30.1, 40.0);
+    ('Breathing Rate', 'Normal', 12.0, 20.0),
+    ('Breathing Rate', 'Low', 6.0, 11.9),
+    ('Breathing Rate', 'High', 20.1, 30.0),
+    ('Breathing Rate', 'Critical', 30.1, 40.0);
+
 
 -- Insert sample data into EMERGENCY_DISPATCH table
 INSERT INTO EMERGENCY_DISPATCH (Patient_ID, Alert_ID, Dispatch_time, Arrival_time, Status, Notes, Patient_address)

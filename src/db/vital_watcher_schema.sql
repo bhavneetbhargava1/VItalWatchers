@@ -76,14 +76,16 @@ CREATE TABLE ALERTS (
 
 -- Vital Thresholds table
 CREATE TABLE VITAL_THRESHOLDS (
-                                  Thresholds_ID       INT AUTO_INCREMENT NOT NULL,
-                                  Vital_type          VARCHAR(50)        NOT NULL UNIQUE,
-                                  Minimum_value       DECIMAL(5, 2)      NOT NULL CHECK (Minimum_value > 0),
-                                  Maximum_value       DECIMAL(5, 2)      NOT NULL,
-                                  PRIMARY KEY (Thresholds_ID)
+                                  Thresholds_ID     INT AUTO_INCREMENT NOT NULL,
+                                  Vital_category    VARCHAR(50)        NOT NULL,
+                                  Vital_level       VARCHAR(50)        NOT NULL,
+                                  Minimum_value     DECIMAL(5, 2)      NOT NULL,
+                                  Maximum_value     DECIMAL(5, 2)      NOT NULL,
+                                  PRIMARY KEY (Thresholds_ID),
+                                  UNIQUE (Vital_category, Vital_level) -- Ensures unique combinations of category and level
 );
 
--- Trigger to check if vital exceeds general thresholds and create alerts
+
 DELIMITER //
 
 CREATE TRIGGER trg_check_vitals
@@ -92,37 +94,57 @@ CREATE TRIGGER trg_check_vitals
 BEGIN
     DECLARE min_bp, max_bp, min_hr, max_hr, min_temp, max_temp, min_oxy, max_oxy, min_breath, max_breath DECIMAL(5,2);
 
-    -- Retrieve general thresholds for each vital type
-    SELECT Minimum_value, Maximum_value INTO min_bp, max_bp FROM VITAL_THRESHOLDS WHERE Vital_type = 'Blood Pressure';
-    SELECT Minimum_value, Maximum_value INTO min_hr, max_hr FROM VITAL_THRESHOLDS WHERE Vital_type = 'Heart Rate';
-    SELECT Minimum_value, Maximum_value INTO min_temp, max_temp FROM VITAL_THRESHOLDS WHERE Vital_type = 'Body Temperature';
-    SELECT Minimum_value, Maximum_value INTO min_oxy, max_oxy FROM VITAL_THRESHOLDS WHERE Vital_type = 'Oxygen Saturation';
-    SELECT Minimum_value, Maximum_value INTO min_breath, max_breath FROM VITAL_THRESHOLDS WHERE Vital_type = 'Breathing Rate';
+    -- Retrieve general thresholds for each vital category with the 'Normal' level
+    SELECT Minimum_value, Maximum_value INTO min_bp, max_bp
+    FROM VITAL_THRESHOLDS
+    WHERE Vital_category = 'Blood Pressure' AND Vital_level = 'Normal';
+
+    SELECT Minimum_value, Maximum_value INTO min_hr, max_hr
+    FROM VITAL_THRESHOLDS
+    WHERE Vital_category = 'Heart Rate' AND Vital_level = 'Normal';
+
+    SELECT Minimum_value, Maximum_value INTO min_temp, max_temp
+    FROM VITAL_THRESHOLDS
+    WHERE Vital_category = 'Body Temperature' AND Vital_level = 'Normal';
+
+    SELECT Minimum_value, Maximum_value INTO min_oxy, max_oxy
+    FROM VITAL_THRESHOLDS
+    WHERE Vital_category = 'Oxygen Saturation' AND Vital_level = 'Normal';
+
+    SELECT Minimum_value, Maximum_value INTO min_breath, max_breath
+    FROM VITAL_THRESHOLDS
+    WHERE Vital_category = 'Breathing Rate' AND Vital_level = 'Normal';
 
     -- Check each vital and insert alerts if they exceed general thresholds
     IF NEW.BLOOD_PRESSURE < min_bp OR NEW.BLOOD_PRESSURE > max_bp THEN
-        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID) VALUES (NEW.PATIENT_ID, 'HIGH', NOW(), 'F', NEW.DEVICE_ID);
+        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
+        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.DEVICE_ID);
     END IF;
 
     IF NEW.HEART_RATE < min_hr OR NEW.HEART_RATE > max_hr THEN
-        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID) VALUES (NEW.PATIENT_ID, 'HIGH', NOW(), 'F', NEW.DEVICE_ID);
+        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
+        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.DEVICE_ID);
     END IF;
 
     IF NEW.BODY_TEMPERATURE < min_temp OR NEW.BODY_TEMPERATURE > max_temp THEN
-        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID) VALUES (NEW.PATIENT_ID, 'HIGH', NOW(), 'F', NEW.DEVICE_ID);
+        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
+        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.DEVICE_ID);
     END IF;
 
     IF NEW.OXYGEN_SATURATION < min_oxy OR NEW.OXYGEN_SATURATION > max_oxy THEN
-        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID) VALUES (NEW.PATIENT_ID, 'HIGH', NOW(), 'F', NEW.DEVICE_ID);
+        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
+        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.DEVICE_ID);
     END IF;
 
     IF NEW.BREATHING_RATE < min_breath OR NEW.BREATHING_RATE > max_breath THEN
-        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID) VALUES (NEW.PATIENT_ID, 'HIGH', NOW(), 'F', NEW.DEVICE_ID);
+        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
+        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.DEVICE_ID);
     END IF;
 END;
 //
 
 DELIMITER ;
+
 
 -- Emergency Dispatch table
 CREATE TABLE EMERGENCY_DISPATCH (
