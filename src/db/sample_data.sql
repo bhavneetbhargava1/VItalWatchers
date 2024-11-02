@@ -12,7 +12,12 @@ VALUES
     ('Emily', 'Clark', 23, '555-7890', 'None', 'Healthy', '404 Birch Rd', 'Female', 'emily.clark@example.com'),
     ('David', 'Martinez', 40, '555-3456', 'Asthma', 'Under Treatment', '505 Maple St', 'Male', 'david.martinez@example.com'),
     ('Jessica', 'Lee', 30, '555-5679', 'None', 'Healthy', '606 Palm Dr', 'Female', 'jessica.lee@example.com'),
-    ('Daniel', 'Taylor', 50, '555-6789', 'Diabetes', 'Sick', '707 Spruce St', 'Male', 'daniel.taylor@example.com');
+    ('Daniel', 'Taylor', 50, '555-6789', 'Diabetes', 'Sick', '707 Spruce St', 'Male', 'daniel.taylor@example.com'),
+    ('George', 'Anderson', 55, '555-9876', 'Hypertension', 'Sick', '808 Oak St', 'Male', 'george.anderson@example.com'),
+    ('Samantha', 'Clark', 42, '555-8765', 'Arrhythmia', 'Under Treatment', '909 Maple St', 'Female', 'samantha.clark@example.com'),
+    ('Lisa', 'Roberts', 39, '555-7654', 'Fever', 'Sick', '1010 Cedar Ave', 'Female', 'lisa.roberts@example.com'),
+    ('Brian', 'Nelson', 47, '555-6543', 'Asthma', 'Under Treatment', '1111 Birch Rd', 'Male', 'brian.nelson@example.com'),
+    ('Nancy', 'Carter', 60, '555-5432', 'COPD', 'Sick', '1212 Palm Dr', 'Female', 'nancy.carter@example.com');
 
 -- Insert sample data into PROVIDERS table
 INSERT INTO PROVIDERS (First_name, Last_name, Provider_phone_no)
@@ -40,7 +45,12 @@ VALUES
     (7, '2024-10-07', 'High heart rate', 'Exercise adjustments', 'Needs follow-up', 7),
     (8, '2024-10-08', 'Normal', 'None', 'No concerns', 8),
     (9, '2024-10-09', 'High blood pressure', 'Medication', 'Monitor closely', 9),
-    (10, '2024-10-10', 'Elevated heart rate', 'Dietary changes', 'Improving', 10);
+    (10, '2024-10-10', 'Elevated heart rate', 'Dietary changes', 'Improving', 10),
+    (11, '2024-10-14', 'Critical blood pressure', 'Emergency intervention', 'High risk', 2),
+    (12, '2024-10-14', 'Critical heart rate', 'Immediate monitoring', 'Under observation', 5),
+    (13, '2024-10-14', 'High fever', 'Antipyretics prescribed', 'Responding to treatment', 6),
+    (14, '2024-10-14', 'Low oxygen saturation', 'Oxygen therapy', 'Improving slowly', 7),
+    (15, '2024-10-14', 'High breathing rate', 'Bronchodilators administered', 'Stabilizing', 8);
 
 -- Insert sample data into VITALS table
 INSERT INTO VITALS (PATIENT_ID, BLOOD_PRESSURE, HEART_RATE, BODY_TEMPERATURE, OXYGEN_SATURATION, BREATHING_RATE, TIME_STAMP, DEVICE_ID)
@@ -54,7 +64,12 @@ VALUES
     (7, 138.0, 92.0, 98.6, 92.0, 18.0, '2024-10-07 07:00:00', 3),
     (8, 118.0, 81.0, 98.2, 96.0, 17.0, '2024-10-08 06:30:00', 4),
     (9, 123.0, 80.0, 98.7, 97.0, 16.5, '2024-10-09 08:15:00', 2),
-    (10, 135.0, 88.0, 98.3, 95.0, 18.5, '2024-10-10 09:30:00', 4);
+    (10, 135.0, 88.0, 98.3, 95.0, 18.5, '2024-10-10 09:30:00', 4),
+    (11, 190.0, 90.0, 98.6, 96.0, 18.0, '2024-10-14 10:00:00', 5),  -- Exceeds blood pressure critical threshold
+    (12, 120.0, 180.0, 98.6, 95.0, 18.0, '2024-10-14 11:00:00', 6),  -- Exceeds heart rate critical threshold
+    (13, 118.0, 78.0, 101.5, 97.0, 17.0, '2024-10-14 12:00:00', 7),  -- Exceeds body temperature high fever threshold
+    (14, 115.0, 85.0, 98.3, 85.0, 19.0, '2024-10-14 13:00:00', 8),  -- Below oxygen saturation critical threshold
+    (15, 130.0, 88.0, 98.4, 97.0, 35.0, '2024-10-14 14:00:00', 9); -- Exceeds breathing rate critical threshold
 
 -- Insert sample data into ALERTS table
 INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
@@ -68,7 +83,13 @@ VALUES
     (7, 'HIGH', '2024-10-10 09:30:00', 'F', 4),
     (8, 'MEDIUM', '2024-10-11 08:00:00', 'T', 1),
     (9, 'LOW', '2024-10-12 09:30:00', 'F', 2),
-    (10, 'HIGH', '2024-10-13 10:30:00', 'F', 3);
+    (10, 'HIGH', '2024-10-13 10:30:00', 'F', 3),
+    (11, 'HIGH', '2024-10-14 10:00:00', 'F', 5),
+    (12, 'HIGH', '2024-10-14 11:00:00', 'F', 6),
+    (13, 'HIGH', '2024-10-14 12:00:00', 'F', 7),
+    (14, 'HIGH', '2024-10-14 13:00:00', 'F', 8),
+    (15, 'HIGH', '2024-10-14 14:00:00', 'F', 9);
+
 
 -- Insert sample data into VITAL_THRESHOLDS table
 INSERT INTO VITAL_THRESHOLDS (Vital_type, Minimum_value, Maximum_value)
@@ -110,7 +131,12 @@ VALUES
     (7, 7, '2024-10-10 09:00:00', '2024-10-10 09:30:00', 'Arrived', 'Patient received medication', '404 Birch Rd'),
     (8, 8, '2024-10-11 08:20:00', NULL, 'Pending', 'Dispatch delayed due to traffic', '505 Maple St'),
     (9, 9, '2024-10-12 07:15:00', '2024-10-12 07:50:00', 'Arrived', 'Patient stabilized on scene', '606 Palm Dr'),
-    (10, 10, '2024-10-13 10:10:00', '2024-10-13 10:40:00', 'Arrived', 'Patient transported to hospital', '707 Spruce St');
+    (10, 10, '2024-10-13 10:10:00', '2024-10-13 10:40:00', 'Arrived', 'Patient transported to hospital', '707 Spruce St'),
+    (11, 11, '2024-10-14 10:10:00', '2024-10-14 10:35:00', 'Arrived', 'Patient stabilized', '808 Oak St'),
+    (12, 12, '2024-10-14 11:15:00', '2024-10-14 11:40:00', 'Arrived', 'Critical heart rate managed', '909 Maple St'),
+    (13, 13, '2024-10-14 12:05:00', NULL, 'Pending', 'Awaiting arrival', '1010 Cedar Ave'),
+    (14, 14, '2024-10-14 13:10:00', NULL, 'Pending', 'Dispatch in progress', '1111 Birch Rd'),
+    (15, 15, '2024-10-14 14:15:00', NULL, 'Pending', 'Dispatch in progress', '1212 Palm Dr');
 
 -- Insert sample data into MESSAGES table
 INSERT INTO MESSAGES (Message_Content, Time_Sent, Sender_ID)
@@ -138,7 +164,12 @@ VALUES
     (7, 'G1819', FALSE),
     (8, 'H2021', TRUE),
     (9, 'I2223', TRUE),
-    (10, 'J2425', FALSE);
+    (10, 'J2425', FALSE),
+    (11, 'K3031', TRUE),
+    (12, 'L3233', FALSE),
+    (13, 'M3435', TRUE),
+    (14, 'N3637', FALSE),
+    (15, 'O3839', TRUE);
 
 -- Insert sample data into TEST_RESULTS table
 INSERT INTO TEST_RESULTS (Patient_ID, Provider_ID, Alert_ID, Result, Test_date)
@@ -152,7 +183,13 @@ VALUES
     (7, 7, 7, 'Pending', '2024-10-07'),
     (8, 8, 8, 'Positive', '2024-10-08'),
     (9, 9, 9, 'Negative', '2024-10-09'),
-    (10, 10, 10, 'Inconclusive', '2024-10-10');
+    (10, 10, 10, 'Inconclusive', '2024-10-10'),
+    (11, 1, 11, 'Positive', '2024-10-11'),
+    (12, 2, 12, 'Negative', '2024-10-12'),
+    (13, 3, 13, 'Pending', '2024-10-13'),
+    (14, 4, 14, 'Positive', '2024-10-14'),
+    (15, 5, 15, 'Negative', '2024-10-15');
+
 
 -- Insert sample data into PATCH_DEVICE table
 INSERT INTO PATCH_DEVICE (Patient_ID, Vital_Status, Patch_Status, Thresholds_ID)
@@ -166,4 +203,9 @@ VALUES
     (7, 'Normal', 'Active', 7),
     (8, 'Warning', 'Inactive', 8),
     (9, 'Critical', 'Active', 9),
-    (10, 'Normal', 'Maintenance', 10);
+    (10, 'Normal', 'Maintenance', 10),
+    (11, 'Critical', 'Active', 2),
+    (12, 'Warning', 'Inactive', 3),
+    (13, 'Normal', 'Active', 1),
+    (14, 'Critical', 'Maintenance', 5),
+    (15, 'Warning', 'Active', 4);
