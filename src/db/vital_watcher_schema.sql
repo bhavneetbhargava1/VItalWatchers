@@ -1,5 +1,4 @@
 CREATE DATABASE VitalWatchers;
-
 USE VitalWatchers;
 
 -- Patients table
@@ -75,34 +74,50 @@ CREATE TABLE ALERTS (
                             ON UPDATE CASCADE
 );
 
--- Vital Thresholds table without the CHECK constraint
+-- Vital Thresholds table
 CREATE TABLE VITAL_THRESHOLDS (
                                   Thresholds_ID       INT AUTO_INCREMENT NOT NULL,
-                                  Patient_ID          INT                NOT NULL,
-                                  Provider_ID         INT                NULL, -- Allow NULL for ON DELETE SET NULL to work
-                                  Vital_type          VARCHAR(50)        NOT NULL,
+                                  Vital_type          VARCHAR(50)        NOT NULL UNIQUE,
                                   Minimum_value       DECIMAL(5, 2)      NOT NULL CHECK (Minimum_value > 0),
                                   Maximum_value       DECIMAL(5, 2)      NOT NULL,
-                                  Time_stamp          DATETIME           NOT NULL,
-                                  PRIMARY KEY (Thresholds_ID),
-                                  FOREIGN KEY (Patient_ID) REFERENCES PATIENTS(Patient_ID)
-                                      ON DELETE CASCADE
-                                      ON UPDATE CASCADE,
-                                  FOREIGN KEY (Provider_ID) REFERENCES PROVIDERS(Provider_ID)
-                                      ON DELETE SET NULL
-                                      ON UPDATE CASCADE
+                                  PRIMARY KEY (Thresholds_ID)
 );
 
--- Trigger to enforce Maximum_value > Minimum_value
+-- Trigger to check if vital exceeds general thresholds and create alerts
 DELIMITER //
 
-CREATE TRIGGER trg_check_thresholds
-    BEFORE INSERT ON VITAL_THRESHOLDS
+CREATE TRIGGER trg_check_vitals
+    AFTER INSERT ON VITALS
     FOR EACH ROW
 BEGIN
-    IF NEW.Maximum_value <= NEW.Minimum_value THEN
-        SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Maximum_value must be greater than Minimum_value';
+    DECLARE min_bp, max_bp, min_hr, max_hr, min_temp, max_temp, min_oxy, max_oxy, min_breath, max_breath DECIMAL(5,2);
+
+    -- Retrieve general thresholds for each vital type
+    SELECT Minimum_value, Maximum_value INTO min_bp, max_bp FROM VITAL_THRESHOLDS WHERE Vital_type = 'Blood Pressure';
+    SELECT Minimum_value, Maximum_value INTO min_hr, max_hr FROM VITAL_THRESHOLDS WHERE Vital_type = 'Heart Rate';
+    SELECT Minimum_value, Maximum_value INTO min_temp, max_temp FROM VITAL_THRESHOLDS WHERE Vital_type = 'Body Temperature';
+    SELECT Minimum_value, Maximum_value INTO min_oxy, max_oxy FROM VITAL_THRESHOLDS WHERE Vital_type = 'Oxygen Saturation';
+    SELECT Minimum_value, Maximum_value INTO min_breath, max_breath FROM VITAL_THRESHOLDS WHERE Vital_type = 'Breathing Rate';
+
+    -- Check each vital and insert alerts if they exceed general thresholds
+    IF NEW.BLOOD_PRESSURE < min_bp OR NEW.BLOOD_PRESSURE > max_bp THEN
+        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID) VALUES (NEW.PATIENT_ID, 'HIGH', NOW(), 'F', NEW.DEVICE_ID);
+    END IF;
+
+    IF NEW.HEART_RATE < min_hr OR NEW.HEART_RATE > max_hr THEN
+        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID) VALUES (NEW.PATIENT_ID, 'HIGH', NOW(), 'F', NEW.DEVICE_ID);
+    END IF;
+
+    IF NEW.BODY_TEMPERATURE < min_temp OR NEW.BODY_TEMPERATURE > max_temp THEN
+        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID) VALUES (NEW.PATIENT_ID, 'HIGH', NOW(), 'F', NEW.DEVICE_ID);
+    END IF;
+
+    IF NEW.OXYGEN_SATURATION < min_oxy OR NEW.OXYGEN_SATURATION > max_oxy THEN
+        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID) VALUES (NEW.PATIENT_ID, 'HIGH', NOW(), 'F', NEW.DEVICE_ID);
+    END IF;
+
+    IF NEW.BREATHING_RATE < min_breath OR NEW.BREATHING_RATE > max_breath THEN
+        INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID) VALUES (NEW.PATIENT_ID, 'HIGH', NOW(), 'F', NEW.DEVICE_ID);
     END IF;
 END;
 //
@@ -152,7 +167,6 @@ CREATE TABLE USER_AUTHORIZATION (
                                         ON UPDATE CASCADE
 );
 
-
 -- Test Results table
 CREATE TABLE TEST_RESULTS (
                               Test_Result_ID     INT AUTO_INCREMENT NOT NULL,
@@ -173,7 +187,6 @@ CREATE TABLE TEST_RESULTS (
                                   ON UPDATE CASCADE
 );
 
-
 -- Patch Device table
 CREATE TABLE PATCH_DEVICE (
                               Device_ID            INT AUTO_INCREMENT NOT NULL,
@@ -189,4 +202,3 @@ CREATE TABLE PATCH_DEVICE (
                                   ON DELETE SET NULL
                                   ON UPDATE CASCADE
 );
-

@@ -71,18 +71,32 @@ VALUES
     (10, 'HIGH', '2024-10-13 10:30:00', 'F', 3);
 
 -- Insert sample data into VITAL_THRESHOLDS table
-INSERT INTO VITAL_THRESHOLDS (Patient_ID, Provider_ID, Vital_type, Minimum_value, Maximum_value, Time_stamp)
+INSERT INTO VITAL_THRESHOLDS (Vital_type, Minimum_value, Maximum_value)
 VALUES
-    (1, 1, 'Blood Pressure', 80.0, 140.0, '2024-10-01 08:00:00'),
-    (2, 2, 'Heart Rate', 60.0, 100.0, '2024-10-02 09:00:00'),
-    (3, 3, 'Body Temperature', 97.0, 99.0, '2024-10-03 07:30:00'),
-    (4, 4, 'Oxygen Saturation', 90.0, 100.0, '2024-10-04 10:00:00'),
-    (5, 5, 'Breathing Rate', 12.0, 20.0, '2024-10-05 11:00:00'),
-    (6, 6, 'Blood Pressure', 80.0, 140.0, '2024-10-06 08:45:00'),
-    (7, 7, 'Heart Rate', 60.0, 100.0, '2024-10-07 07:00:00'),
-    (8, 8, 'Body Temperature', 97.0, 99.0, '2024-10-08 06:30:00'),
-    (9, 9, 'Oxygen Saturation', 90.0, 100.0, '2024-10-09 08:15:00'),
-    (10, 10, 'Breathing Rate', 12.0, 20.0, '2024-10-10 09:30:00');
+    ('Blood Pressure - Normal', 90.0, 120.0),
+    ('Blood Pressure - Elevated', 121.0, 129.0),
+    ('Blood Pressure - High', 130.0, 139.0),
+    ('Blood Pressure - Very High', 140.0, 180.0),
+    ('Blood Pressure - Critical', 181.0, 250.0),
+
+    ('Heart Rate - Normal', 60.0, 100.0),
+    ('Heart Rate - Low', 30.0, 59.9),
+    ('Heart Rate - High', 101.0, 150.0),
+    ('Heart Rate - Critical', 151.0, 200.0),
+
+    ('Body Temperature - Normal', 97.0, 99.0),
+    ('Body Temperature - Mild Fever', 99.1, 100.4),
+    ('Body Temperature - High Fever', 100.5, 103.0),
+    ('Body Temperature - Low', 89.0, 96.9),
+
+    ('Oxygen Saturation - Normal', 95.0, 100.0),
+    ('Oxygen Saturation - Low', 90.0, 94.9),
+    ('Oxygen Saturation - Critical', 80.0, 89.9),
+
+    ('Breathing Rate - Normal', 12.0, 20.0),
+    ('Breathing Rate - Low', 6.0, 11.9),
+    ('Breathing Rate - High', 20.1, 30.0),
+    ('Breathing Rate - Critical', 30.1, 40.0);
 
 -- Insert sample data into EMERGENCY_DISPATCH table
 INSERT INTO EMERGENCY_DISPATCH (Patient_ID, Alert_ID, Dispatch_time, Arrival_time, Status, Notes, Patient_address)
@@ -153,7 +167,3 @@ VALUES
     (8, 'Warning', 'Inactive', 8),
     (9, 'Critical', 'Active', 9),
     (10, 'Normal', 'Maintenance', 10);
-
-;
-
-
