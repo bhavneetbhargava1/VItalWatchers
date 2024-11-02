@@ -87,6 +87,24 @@ SELECT pname.Patient_ID,
 FROM PATIENTS pname
 RIGHT JOIN PATCH_DEVICE pd ON pname.Patient_ID = pd.Patient_ID;
 
+-- Query 5: Uses nested queries with any of the set operations UNION, EXCEPT, or INTERSECT*
+-- Purpose: Find patients who have both high heart rate readings and 'HIGH' alerts
+-- Summary of result: The result will show the Patient_ID, First_Name, and Last_Name of the patients.
+
+SELECT pname.Patient_ID,
+       pname.First_name,
+       pname.Last_name
+FROM PATIENTS pname
+JOIN VITALS v ON pname.Patient_ID = v.PATIENT_ID
+WHERE v.HEART_RATE > 70
+
+INTERSECT
+SELECT pname.Patient_ID,
+       pname.First_name,
+       pname.Last_name
+FROM PATIENTS pname
+JOIN ALERTS a ON pname.Patient_ID = a.PATIENT_ID
+WHERE a.ALERT_TYPE = 'HIGH';
 
 -- Query 7: Create non-trivial SQL query that uses four tables in FROM clause
 -- Purpose: This query retrieves a list of patients who have received recent alerts,
