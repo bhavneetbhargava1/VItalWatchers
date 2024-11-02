@@ -5,10 +5,16 @@ USE VitalWatchers;
 -- Summary of Result: This query returns the Patient ID, full name, date of their latest health summary,
 --                    and any provider notes associated with that summary.
 
-SELECT p.Patient_ID, CONCAT(p.First_name, ' ', p.Last_name) AS Patient_Name, h.Date, h.Provider_notes
+SELECT DISTINCT p.Patient_ID,
+                CONCAT(p.First_name, ' ', p.Last_name) AS Patient_Name,
+                h.Date,
+                h.Provider_notes
 FROM PATIENTS p
-         JOIN HEALTH_SUMMARY h ON p.Patient_ID = h.Patient_ID
-         JOIN PROVIDERS pr ON h.Provider_ID = pr.Provider_ID;
+         JOIN HEALTH_SUMMARY h
+              ON p.Patient_ID = h.Patient_ID
+         JOIN PROVIDERS pr
+              ON h.Provider_ID = pr.Provider_ID;
+
 
 -- SQL Query 2: Nested Query with IN operator and GROUP BY clause
 -- Purpose: Retrieve active patch devices monitoring patients with critical health conditions,
