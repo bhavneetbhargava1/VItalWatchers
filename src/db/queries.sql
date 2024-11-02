@@ -106,6 +106,34 @@ FROM PATIENTS pname
 JOIN ALERTS a ON pname.Patient_ID = a.PATIENT_ID
 WHERE a.ALERT_TYPE = 'HIGH';
 
+-- Query 6: Create your own non-trivial SQL query (must use at least two tables in FROM clause)
+-- Purpose: The purpose of this SQL query is to retrieve detailed health information for patients,
+-- including their provider's name and contact details, for a specific date range.
+-- Summary of result: The result of this query will be a dataset containing the specified columns
+-- for each patient who has health summaries recorded in the specified date range
+
+SELECT
+      pname.Patient_ID,
+      pname.First_name,
+      pname.Last_name,
+      hs.Date,
+      hs.Vital_signs,
+      hs.Treatments,
+      hs.Provider_notes,
+      CONCAT(pv.First_name, ' ', pv.Last_name) AS Provider_Name,
+      pv.Provider_phone_no
+FROM
+      PATIENTS pname
+JOIN
+      HEALTH_SUMMARY hs ON pname.Patient_ID = hs.Patient_ID
+JOIN
+      PROVIDERS pv ON hs.Provider_ID = pv.Provider_ID
+WHERE
+      hs.Date >= '2024-10-01' AND hs.Date <= '2024-10-10'
+ORDER BY
+      pname.Last_name, pname.First_name;
+
+
 -- Query 7: Create non-trivial SQL query that uses four tables in FROM clause
 -- Purpose: This query retrieves a list of patients who have received recent alerts,
 --          along with details about the specific alert and the associated provider.
