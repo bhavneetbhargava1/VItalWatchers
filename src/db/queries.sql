@@ -4,7 +4,6 @@ USE VitalWatchers;
 -- Purpose: Retrieve patient details, their health summary, and provider notes.
 -- Summary of Result: This query returns the Patient ID, full name, date of their latest health summary,
 --                    and any provider notes associated with that summary.
-
 SELECT DISTINCT p.Patient_ID,
                 CONCAT(p.First_name, ' ', p.Last_name) AS Patient_Name,
                 h.Date,
@@ -21,7 +20,6 @@ FROM PATIENTS p
 --          grouping by device and health condition.
 -- Summary of Result: Displays Device ID, patch status, patient name, critical health condition,
 --                    provider notes, and provider's name if available.
-
 SELECT
     pd.Device_ID,
     pd.Patch_Status,
@@ -188,23 +186,24 @@ SELECT
     PR.Last_name AS Provider_Last_Name
 FROM
     PATIENTS P
-        JOIN
-    VITALS V ON P.Patient_ID = V.PATIENT_ID
-        JOIN
-    HEALTH_SUMMARY HS ON P.Patient_ID = HS.Patient_ID
-        JOIN
-    VITAL_THRESHOLDS VT ON P.Patient_ID = VT.Patient_ID
-        JOIN
-    PROVIDERS PR ON VT.Provider_ID = PR.Provider_ID
+        JOIN VITALS V ON P.Patient_ID = V.PATIENT_ID
+        JOIN HEALTH_SUMMARY HS ON P.Patient_ID = HS.Patient_ID
+        JOIN PROVIDERS PR ON HS.Provider_ID = PR.Provider_ID
 WHERE
     P.Age >= 65
   AND (
-    V.BLOOD_PRESSURE < VT.Minimum_value OR V.BLOOD_PRESSURE > VT.Maximum_value OR
-    V.HEART_RATE < VT.Minimum_value OR V.HEART_RATE > VT.Maximum_value OR
-    V.BODY_TEMPERATURE < VT.Minimum_value OR V.BODY_TEMPERATURE > VT.Maximum_value OR
-    V.OXYGEN_SATURATION < VT.Minimum_value OR V.OXYGEN_SATURATION > VT.Maximum_value OR
-    V.BREATHING_RATE < VT.Minimum_value OR V.BREATHING_RATE > VT.Maximum_value
+    EXISTS (SELECT 1 FROM VITAL_THRESHOLDS VT WHERE VT.Vital_category = 'Blood Pressure' AND
+        (V.BLOOD_PRESSURE < VT.Minimum_value OR V.BLOOD_PRESSURE > VT.Maximum_value))
+        OR EXISTS (SELECT 1 FROM VITAL_THRESHOLDS VT WHERE VT.Vital_category = 'Heart Rate' AND
+        (V.HEART_RATE < VT.Minimum_value OR V.HEART_RATE > VT.Maximum_value))
+        OR EXISTS (SELECT 1 FROM VITAL_THRESHOLDS VT WHERE VT.Vital_category = 'Body Temperature' AND
+        (V.BODY_TEMPERATURE < VT.Minimum_value OR V.BODY_TEMPERATURE > VT.Maximum_value))
+        OR EXISTS (SELECT 1 FROM VITAL_THRESHOLDS VT WHERE VT.Vital_category = 'Oxygen Saturation' AND
+        (V.OXYGEN_SATURATION < VT.Minimum_value OR V.OXYGEN_SATURATION > VT.Maximum_value))
+        OR EXISTS (SELECT 1 FROM VITAL_THRESHOLDS VT WHERE VT.Vital_category = 'Breathing Rate' AND
+        (V.BREATHING_RATE < VT.Minimum_value OR V.BREATHING_RATE > VT.Maximum_value))
     );
+
 
 
 
