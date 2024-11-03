@@ -262,3 +262,44 @@ HAVING
 ORDER BY
     COUNT(DISTINCT EMERGENCY_DISPATCH.Dispatch_time) DESC,
     MIN(VITALS.OXYGEN_SATURATION) ASC;
+
+-- Query 10: Create non-trivial SQL query using nine tables in FROM clause, including nine tables, and aliased names
+-- Purpose: This query provides patients who have unresolved high alerts, including their healthcare provider details, latest vital signs,
+--          patch device status, and any emergency dispatch actions taken in response to the alert.
+-- Summary of Result: It returns Patient_ID, full Patient_Name, Alert_ID, alert timestamp, provider name, recent vital readings, patch
+--                    device status, and emergency dispatch details if applicable.
+SELECT
+    P.Patient_ID AS PatientID,
+    CONCAT(P.First_name, ' ', P.Last_name) AS Patient_Name,
+    A.ALERT_ID AS AlertID,
+    A.TIME_STAMP AS Alert_Timestamp,
+    CONCAT(PR.First_name, ' ', PR.Last_name) AS Provider_Name,
+
+    V.BLOOD_PRESSURE,
+    V.HEART_RATE,
+    V.OXYGEN_SATURATION,
+
+    PD.Vital_Status AS Patch_Vital_Status,
+    PD.Patch_Status AS Patch_Device_Status,
+
+    ED.Dispatch_time AS Dispatch_Time,
+    ED.Status AS Dispatch_Status,
+
+    TR.Result AS Test_Result,
+    TR.Test_date AS Test_Date
+
+FROM
+    PATIENTS P
+        JOIN ALERTS A ON P.Patient_ID = A.PATIENT_ID
+        JOIN HEALTH_SUMMARY HS ON P.Patient_ID = HS.Patient_ID
+        JOIN PROVIDERS PR ON HS.Provider_ID = PR.Provider_ID
+        LEFT JOIN VITALS V ON P.Patient_ID = V.PATIENT_ID
+        LEFT JOIN PATCH_DEVICE PD ON P.Patient_ID = PD.Patient_ID
+        LEFT JOIN EMERGENCY_DISPATCH ED ON A.ALERT_ID = ED.Alert_ID
+        LEFT JOIN TEST_RESULTS TR ON P.Patient_ID = TR.Patient_ID
+
+WHERE
+    A.ALERT_TYPE = 'HIGH'
+  AND A.RESOLVED = 'F'
+  AND (ED.Status IS NULL OR ED.Status <> 'Resolved');
+
