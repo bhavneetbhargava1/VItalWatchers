@@ -82,7 +82,7 @@ CREATE TABLE VITAL_THRESHOLDS (
                                   Minimum_value     DECIMAL(5, 2)      NOT NULL,
                                   Maximum_value     DECIMAL(5, 2)      NOT NULL,
                                   PRIMARY KEY (Thresholds_ID),
-                                  UNIQUE (Vital_category, Vital_level) -- Ensures unique combinations of category and level
+                                  UNIQUE (Vital_category, Vital_level)
 );
 
 
@@ -141,7 +141,6 @@ BEGIN
         VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.DEVICE_ID);
     END IF;
 END;
-//
 
 DELIMITER ;
 
