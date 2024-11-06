@@ -215,9 +215,10 @@ CREATE TABLE PATCH_DEVICE (
                               Patient_ID           INT                NOT NULL,
                               Vital_Status         VARCHAR(20)        NOT NULL CHECK (Vital_Status IN ('Normal', 'Critical', 'Warning')),
                               Patch_Status         VARCHAR(20)        NOT NULL CHECK (Patch_Status IN ('Active', 'Inactive', 'Maintenance')),
+                              Patient_add          VARCHAR(100)       NOT NULL,
                               Thresholds_ID        INT                DEFAULT NULL,
                               PRIMARY KEY (Device_ID),
-                              FOREIGN KEY (Patient_ID) REFERENCES PATIENTS(Patient_ID)
+                              FOREIGN KEY (Patient_ID, Patient_add) REFERENCES PATIENTS(Patient_ID, Patient_address)
                                   ON DELETE CASCADE
                                   ON UPDATE CASCADE,
                               FOREIGN KEY (Thresholds_ID) REFERENCES VITAL_THRESHOLDS(Thresholds_ID)
