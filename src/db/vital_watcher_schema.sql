@@ -9,7 +9,7 @@ CREATE TABLE PATIENTS (
                           Age                  INT                NOT NULL CHECK (Age > 0 AND Age <= 120),
                           Patient_phone_num    VARCHAR(15)        DEFAULT 'Not Provided',
                           Medical_history      VARCHAR(100)       DEFAULT 'No history provided',
-                          Status               VARCHAR(20)        NOT NULL CHECK (Status IN ('Healthy', 'Sick', 'Under Treatment')),
+                          Patient_status               VARCHAR(20)        NOT NULL CHECK (Patient_status IN ('Healthy', 'Sick', 'Under Treatment')),
                           Patient_address      VARCHAR(100)       NOT NULL,
                           Gender               VARCHAR(10)        NOT NULL CHECK (Gender IN ('Male', 'Female')),
                           Email                VARCHAR(100)       NOT NULL,
@@ -226,7 +226,7 @@ CREATE TABLE PATCH_DEVICE (
                               FOREIGN KEY (Patient_ID, Patient_add) REFERENCES PATIENTS(Patient_ID, Patient_address)
                                   ON DELETE CASCADE
                                   ON UPDATE CASCADE,
-                              FOREIGN KEY (Thresholds_ID) REFERENCES VITAL_THRESHOLDS(Thresholds_ID)
+                              FOREIGN KEY (Thresholds_ID, Vital_Status) REFERENCES VITAL_THRESHOLDS(Thresholds_ID, Vital_level)
                                   ON DELETE SET NULL
                                   ON UPDATE CASCADE
 );
