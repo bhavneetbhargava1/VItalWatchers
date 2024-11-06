@@ -87,7 +87,8 @@ CREATE TABLE VITAL_THRESHOLDS (
                                   Minimum_value     DECIMAL(5, 2)      NOT NULL,
                                   Maximum_value     DECIMAL(5, 2)      NOT NULL,
                                   PRIMARY KEY (Thresholds_ID),
-                                  UNIQUE (Vital_category, Vital_level)
+                                  UNIQUE (Thresholds_ID, Vital_level),   -- Add unique constraint for composite foreign key reference
+                                  UNIQUE (Vital_category, Vital_level)   -- Existing unique constraint for category and level
 );
 
 
@@ -218,7 +219,7 @@ CREATE TABLE TEST_RESULTS (
 CREATE TABLE PATCH_DEVICE (
                               Device_ID            INT AUTO_INCREMENT NOT NULL,
                               Patient_ID           INT                NOT NULL,
-                              Vital_Status         VARCHAR(20)        NOT NULL CHECK (Vital_Status IN ('Normal', 'Critical', 'Warning')),
+                              Vital_Status         VARCHAR(20),
                               Patch_Status         VARCHAR(20)        NOT NULL CHECK (Patch_Status IN ('Active', 'Inactive', 'Maintenance')),
                               Patient_add          VARCHAR(100)       NOT NULL,
                               Thresholds_ID        INT                DEFAULT NULL,
@@ -230,3 +231,4 @@ CREATE TABLE PATCH_DEVICE (
                                   ON DELETE SET NULL
                                   ON UPDATE CASCADE
 );
+
