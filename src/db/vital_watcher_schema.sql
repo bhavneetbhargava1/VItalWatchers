@@ -179,11 +179,12 @@ CREATE TABLE MESSAGES (
 -- User Authorization table
 CREATE TABLE USER_AUTHORIZATION (
                                     User_ID            INT AUTO_INCREMENT NOT NULL,
-                                    Patient_ID         INT                NOT NULL,
+                                    Email              VARCHAR(100)       NOT NULL,
+                                    Patient_phone_num  VARCHAR(15)        NOT NULL,
                                     User_code          VARCHAR(10)        NOT NULL,
                                     Activation         BOOLEAN            DEFAULT FALSE,
                                     PRIMARY KEY (User_ID),
-                                    FOREIGN KEY (Patient_ID) REFERENCES PATIENTS(Patient_ID)
+                                    FOREIGN KEY (Email, Patient_phone_num) REFERENCES PATIENTS(Email, Patient_phone_num)
                                         ON DELETE CASCADE
                                         ON UPDATE CASCADE
 );
