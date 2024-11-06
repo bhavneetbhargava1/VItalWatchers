@@ -87,8 +87,8 @@ CREATE TABLE VITAL_THRESHOLDS (
                                   Minimum_value     DECIMAL(5, 2)      NOT NULL,
                                   Maximum_value     DECIMAL(5, 2)      NOT NULL,
                                   PRIMARY KEY (Thresholds_ID),
-                                  UNIQUE (Thresholds_ID, Vital_level),   -- Add unique constraint for composite foreign key reference
-                                  UNIQUE (Vital_category, Vital_level)   -- Existing unique constraint for category and level
+                                  UNIQUE (Thresholds_ID, Vital_level),
+                                  UNIQUE (Vital_category, Vital_level)
 );
 
 
