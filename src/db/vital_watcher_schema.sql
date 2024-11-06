@@ -13,8 +13,13 @@ CREATE TABLE PATIENTS (
                           Patient_address      VARCHAR(100)       NOT NULL,
                           Gender               VARCHAR(10)        NOT NULL CHECK (Gender IN ('Male', 'Female')),
                           Email                VARCHAR(100)       NOT NULL,
-                          PRIMARY KEY (Patient_ID)
+                          PRIMARY KEY (Patient_ID),
+                          UNIQUE (Email, Patient_phone_num),
+                          UNIQUE (Patient_address),
+                          UNIQUE (Patient_ID, Patient_address)
 );
+
+
 
 -- Providers table
 CREATE TABLE PROVIDERS (
@@ -218,7 +223,7 @@ CREATE TABLE PATCH_DEVICE (
                               Patient_add          VARCHAR(100)       NOT NULL,
                               Thresholds_ID        INT                DEFAULT NULL,
                               PRIMARY KEY (Device_ID),
-                              FOREIGN KEY (Patient_ID, Patient_add, Patch_Status) REFERENCES PATIENTS(Patient_ID, Patient_address, Status)
+                              FOREIGN KEY (Patient_ID, Patient_add) REFERENCES PATIENTS(Patient_ID, Patient_address)
                                   ON DELETE CASCADE
                                   ON UPDATE CASCADE,
                               FOREIGN KEY (Thresholds_ID) REFERENCES VITAL_THRESHOLDS(Thresholds_ID)
