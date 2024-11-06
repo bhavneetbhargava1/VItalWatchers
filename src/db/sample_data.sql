@@ -66,11 +66,11 @@ VALUES
     (8, 118.0, 81.0, 98.2, 96.0, 17.0, '2024-10-08 06:30:00', 4),
     (9, 123.0, 80.0, 98.7, 97.0, 16.5, '2024-10-09 08:15:00', 2),
     (10, 135.0, 88.0, 98.3, 95.0, 18.5, '2024-10-10 09:30:00', 4),
-    (11, 190.0, 90.0, 98.6, 96.0, 18.0, '2024-10-14 10:00:00', 5),  -- Exceeds blood pressure critical threshold
-    (12, 120.0, 180.0, 98.6, 95.0, 18.0, '2024-10-14 11:00:00', 6),  -- Exceeds heart rate critical threshold
-    (13, 118.0, 78.0, 101.5, 97.0, 17.0, '2024-10-14 12:00:00', 7),  -- Exceeds body temperature high fever threshold
-    (14, 115.0, 85.0, 98.3, 85.0, 19.0, '2024-10-14 13:00:00', 8),  -- Below oxygen saturation critical threshold
-    (15, 130.0, 88.0, 98.4, 97.0, 35.0, '2024-10-14 14:00:00', 9); -- Exceeds breathing rate critical threshold
+    (11, 190.0, 90.0, 98.6, 96.0, 18.0, '2024-10-14 10:00:00', 5),
+    (12, 120.0, 180.0, 98.6, 95.0, 18.0, '2024-10-14 11:00:00', 6),
+    (13, 118.0, 78.0, 101.5, 97.0, 17.0, '2024-10-14 12:00:00', 7),
+    (14, 115.0, 85.0, 98.3, 85.0, 19.0, '2024-10-14 13:00:00', 8),
+    (15, 130.0, 88.0, 98.4, 97.0, 35.0, '2024-10-14 14:00:00', 9);
 
 -- Insert sample data into ALERTS table
 INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
@@ -155,23 +155,24 @@ VALUES
     ('Request additional test for oxygen saturation.', '2024-10-10 09:30:00', 10);
 
 -- Insert sample data into USER_AUTHORIZATION table
-INSERT INTO USER_AUTHORIZATION (Patient_ID, User_code, Activation)
+INSERT INTO USER_AUTHORIZATION (Email, Patient_phone_num, User_code, Activation)
 VALUES
-    (1, 'A1234', TRUE),
-    (2, 'B5678', FALSE),
-    (3, 'C9101', TRUE),
-    (4, 'D1123', TRUE),
-    (5, 'E1415', FALSE),
-    (6, 'F1617', TRUE),
-    (7, 'G1819', FALSE),
-    (8, 'H2021', TRUE),
-    (9, 'I2223', TRUE),
-    (10, 'J2425', FALSE),
-    (11, 'K3031', TRUE),
-    (12, 'L3233', FALSE),
-    (13, 'M3435', TRUE),
-    (14, 'N3637', FALSE),
-    (15, 'O3839', TRUE);
+    ('john.doe@example.com', '555-1234', 'A1234', TRUE),
+    ('jane.smith@example.com', '555-5678', 'B5678', FALSE),
+    ('alice.johnson@example.com', '555-8765', 'C9101', TRUE),
+    ('robert.brown@example.com', '555-4321', 'D1123', TRUE),
+    ('linda.davis@example.com', '555-6543', 'E1415', FALSE),
+    ('michael.wilson@example.com', '555-2345', 'F1617', TRUE),
+    ('emily.clark@example.com', '555-7890', 'G1819', FALSE),
+    ('david.martinez@example.com', '555-3456', 'H2021', TRUE),
+    ('jessica.lee@example.com', '555-5679', 'I2223', TRUE),
+    ('daniel.taylor@example.com', '555-6789', 'J2425', FALSE),
+    ('george.anderson@example.com', '555-9876', 'K3031', TRUE),
+    ('samantha.clark@example.com', '555-8765', 'L3233', FALSE),
+    ('lisa.roberts@example.com', '555-7654', 'M3435', TRUE),
+    ('brian.nelson@example.com', '555-6543', 'N3637', FALSE),
+    ('nancy.carter@example.com', '555-5432', 'O3839', TRUE);
+
 
 -- Insert sample data into TEST_RESULTS table
 INSERT INTO TEST_RESULTS (Patient_ID, Provider_ID, Alert_ID, Result, Test_date)
