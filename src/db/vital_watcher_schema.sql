@@ -156,7 +156,7 @@ CREATE TABLE EMERGENCY_DISPATCH (
                                     Notes              TEXT,
                                     Patient_address    VARCHAR(100)       NOT NULL,
                                     PRIMARY KEY (Dispatch_ID),
-                                    FOREIGN KEY (Patient_ID) REFERENCES PATIENTS(Patient_ID)
+                                    FOREIGN KEY (Patient_ID, Patient_address) REFERENCES PATIENTS(Patient_ID)
                                         ON DELETE CASCADE
                                         ON UPDATE CASCADE,
                                     FOREIGN KEY (Alert_ID) REFERENCES ALERTS(Alert_ID)
