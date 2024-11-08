@@ -125,10 +125,14 @@ WHERE pname.Patient_ID IN (
 
 
 -- Query 6: Create your own non-trivial SQL query (must use at least two tables in FROM clause)
--- Purpose: The purpose of this SQL query is to retrieve detailed health information for patients,
--- including their provider's name and contact details, for a specific date range.
--- Summary of result: The result of this query will be a dataset containing the specified columns
--- for each patient who has health summaries recorded in the specified date range
+-- Purpose: This query retrieves detailed health information for patients
+--           within a specific date range. It also includes contact details
+--           for the providers who created the health summaries.
+
+-- Summary of result: The result will be a dataset containing:
+--   - Patient information (ID, first name, last name)
+--   - Health summary details (date, vital signs, treatments, provider notes)
+--   - Provider information (full name, phone number)
 
 SELECT
       pname.Patient_ID,
