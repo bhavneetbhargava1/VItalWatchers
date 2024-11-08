@@ -13,7 +13,7 @@ public class VitalWatchersDB {
 
     public static void main(String[] args) {
         // Query Example: Run one of the SQL queries to fetch patient information
-        String query = "SELECT First_name, Last_name, Age, Status FROM PATIENTS";
+        String query = "SELECT First_name, Last_name, Age, Patient_status FROM PATIENTS";
 
         // Establish connection and execute the query
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);

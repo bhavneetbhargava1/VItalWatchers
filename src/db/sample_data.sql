@@ -1,7 +1,10 @@
 USE VitalWatchers;
 
+
+
+
 -- Insert sample data into PATIENTS table
-INSERT INTO PATIENTS (First_name, Last_name, Age, Patient_phone_num, Medical_history, Status, Patient_address, Gender, Email)
+INSERT INTO PATIENTS (First_name, Last_name, Age, Patient_phone_num, Medical_history, Patient_status, Patient_address, Gender, Email)
 VALUES
     ('John', 'Doe', 45, '555-1234', 'None', 'Healthy', '123 Main St', 'Male', 'john.doe@example.com'),
     ('Jane', 'Smith', 34, '555-5678', 'Asthma', 'Under Treatment', '456 Elm St', 'Female', 'jane.smith@example.com'),
@@ -19,6 +22,9 @@ VALUES
     ('Brian', 'Nelson', 47, '555-6543', 'Asthma', 'Under Treatment', '1111 Birch Rd', 'Male', 'brian.nelson@example.com'),
     ('Nancy', 'Carter', 60, '555-5432', 'COPD', 'Sick', '1212 Palm Dr', 'Female', 'nancy.carter@example.com');
 
+
+
+
 -- Insert sample data into PROVIDERS table
 INSERT INTO PROVIDERS (First_name, Last_name, Provider_phone_no)
 VALUES
@@ -32,6 +38,8 @@ VALUES
     ('Dr. James', 'Wilson', '555-6677'),
     ('Dr. Maria', 'Rodriguez', '555-8899'),
     ('Dr. Andrew', 'Kim', '555-0011');
+
+
 
 
 -- Insert sample data into HEALTH_SUMMARY table
@@ -53,6 +61,10 @@ VALUES
     (14, '2024-10-14', 'Low oxygen saturation', 'Oxygen therapy', 'Improving slowly', 7),
     (15, '2024-10-14', 'High breathing rate', 'Bronchodilators administered', 'Stabilizing', 8);
 
+
+
+
+
 -- Insert sample data into VITALS table
 INSERT INTO VITALS (PATIENT_ID, BLOOD_PRESSURE, HEART_RATE, BODY_TEMPERATURE, OXYGEN_SATURATION, BREATHING_RATE, TIME_STAMP, DEVICE_ID)
 VALUES
@@ -72,6 +84,9 @@ VALUES
     (14, 115.0, 85.0, 98.3, 85.0, 19.0, '2024-10-14 13:00:00', 8),
     (15, 130.0, 88.0, 98.4, 97.0, 35.0, '2024-10-14 14:00:00', 9);
 
+
+
+
 -- Insert sample data into ALERTS table
 INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
 VALUES
@@ -90,6 +105,9 @@ VALUES
     (13, 'HIGH', '2024-10-14 12:00:00', 'F', 7),
     (14, 'HIGH', '2024-10-14 13:00:00', 'F', 8),
     (15, 'HIGH', '2024-10-14 14:00:00', 'F', 9);
+
+
+
 
 
 -- Insert sample data into VITAL_THRESHOLDS table
@@ -121,6 +139,8 @@ VALUES
     ('Breathing Rate', 'Critical', 30.1, 40.0);
 
 
+
+
 -- Insert sample data into EMERGENCY_DISPATCH table
 INSERT INTO EMERGENCY_DISPATCH (Patient_ID, Alert_ID, Dispatch_time, Arrival_time, Status, Notes, Patient_address)
 VALUES
@@ -140,6 +160,9 @@ VALUES
     (14, 14, '2024-10-14 13:10:00', NULL, 'Pending', 'Dispatch in progress', '1111 Birch Rd'),
     (15, 15, '2024-10-14 14:15:00', NULL, 'Pending', 'Dispatch in progress', '1212 Palm Dr');
 
+
+
+
 -- Insert sample data into MESSAGES table
 INSERT INTO MESSAGES (Message_Content, Time_Sent, Sender_ID)
 VALUES
@@ -153,6 +176,9 @@ VALUES
     ('Patient requires emergency check.', '2024-10-08 08:00:00', 8),
     ('Confirm patient appointment for next week.', '2024-10-09 07:45:00', 9),
     ('Request additional test for oxygen saturation.', '2024-10-10 09:30:00', 10);
+
+
+
 
 -- Insert sample data into USER_AUTHORIZATION table
 INSERT INTO USER_AUTHORIZATION (Email, Patient_phone_num, User_code, Activation)
@@ -172,6 +198,8 @@ VALUES
     ('lisa.roberts@example.com', '555-7654', 'M3435', TRUE),
     ('brian.nelson@example.com', '555-6543', 'N3637', FALSE),
     ('nancy.carter@example.com', '555-5432', 'O3839', TRUE);
+
+
 
 
 -- Insert sample data into TEST_RESULTS table
@@ -194,21 +222,24 @@ VALUES
     (15, 5, 15, 'Negative', '2024-10-15');
 
 
+
+
 -- Insert sample data into PATCH_DEVICE table
-INSERT INTO PATCH_DEVICE (Patient_ID, Vital_Status, Patch_Status, Thresholds_ID)
+INSERT INTO PATCH_DEVICE (Patient_ID, Patient_add, Vital_Status, Patch_Status, Thresholds_ID)
 VALUES
-    (1, 'Normal', 'Active', 1),
-    (2, 'Critical', 'Inactive', 2),
-    (3, 'Warning', 'Maintenance', 3),
-    (4, 'Normal', 'Active', 4),
-    (5, 'Critical', 'Inactive', 5),
-    (6, 'Warning', 'Maintenance', 6),
-    (7, 'Normal', 'Active', 7),
-    (8, 'Warning', 'Inactive', 8),
-    (9, 'Critical', 'Active', 9),
-    (10, 'Normal', 'Maintenance', 10),
-    (11, 'Critical', 'Active', 2),
-    (12, 'Warning', 'Inactive', 3),
-    (13, 'Normal', 'Active', 1),
-    (14, 'Critical', 'Maintenance', 5),
-    (15, 'Warning', 'Active', 4);
+    (1, '123 Main St', 'Normal', 'Active', 1),
+    (2, '456 Elm St', 'Critical', 'Inactive', 5),
+    (3, '789 Maple Ave', 'High', 'Maintenance', 3),
+    (4, '101 Oak St', 'Normal', 'Active', 1),
+    (5, '202 Pine St', 'Critical', 'Inactive', 5),
+    (6, '303 Cedar Ave', 'Elevated', 'Maintenance', 2),
+    (7, '404 Birch Rd', 'Normal', 'Active', 1),
+    (8, '505 Maple St', 'Low', 'Inactive', 6),
+    (9, '606 Palm Dr', 'Critical', 'Active', 5),
+    (10, '707 Spruce St', 'Mild Fever', 'Maintenance', 7),
+    (11, '808 Oak St', 'High Fever', 'Active', 4),
+    (12, '909 Maple St', 'High', 'Inactive', 3),
+    (13, '1010 Cedar Ave', 'Normal', 'Active', 1),
+    (14, '1111 Birch Rd', 'Low', 'Maintenance', 6),
+    (15, '1212 Palm Dr', 'Critical', 'Active', 5);
+
