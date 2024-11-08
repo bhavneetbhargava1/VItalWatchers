@@ -1,3 +1,6 @@
+-- ***************************
+-- Part C: SQL Query Design
+-- ***************************
 USE VitalWatchers;
 
 -- Query 1: Triple Table Join

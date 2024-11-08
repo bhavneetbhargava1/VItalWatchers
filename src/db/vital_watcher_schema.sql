@@ -1,7 +1,22 @@
+/* ********************************
+Project Phase II
+Group 7 (MySQL)
+This SQL Script was tested on
+MySQL Workbench and hosted on IntelliJ.
+To run, simply load this script file and execute while you have
+a MySQL connection active.
+******************************** */
+
+-- ***************************
+-- Part A: Database Schema Creation
+-- ***************************
+
+-- DATABASE: VitalWatchers
 CREATE DATABASE VitalWatchers;
 USE VitalWatchers;
 
--- Patients table
+-- TABLE: PATIENTS
+-- Purpose: Stores details of patients including personal information and health status.
 CREATE TABLE PATIENTS (
                           Patient_ID           INT AUTO_INCREMENT NOT NULL,
                           First_name           VARCHAR(50)        NOT NULL,
@@ -21,7 +36,8 @@ CREATE TABLE PATIENTS (
 
 
 
--- Providers table
+-- TABLE: PROVIDERS
+-- Purpose: Stores provider information, including contact details
 CREATE TABLE PROVIDERS (
                            Provider_ID          INT AUTO_INCREMENT NOT NULL,
                            First_name           VARCHAR(50)        NOT NULL,
@@ -30,7 +46,8 @@ CREATE TABLE PROVIDERS (
                            PRIMARY KEY (Provider_ID)
 );
 
--- Health Summary table
+-- TABLE: HEALTH_SUMMARY
+-- Purpose: Records health summaries for patients, including vital signs and provider notes.
 CREATE TABLE HEALTH_SUMMARY (
                                 Health_Summary_ID    INT AUTO_INCREMENT NOT NULL,
                                 Patient_ID           INT                NOT NULL,
@@ -48,7 +65,9 @@ CREATE TABLE HEALTH_SUMMARY (
                                     ON UPDATE CASCADE
 );
 
--- Vitals table
+-- VITALS table
+-- Purpose: Stores patient vital information, including blood pressure, heart rate, body temperature,
+--          oxygen saturation, and breathing rate. Each entry is timestamped and linked to a device.
 CREATE TABLE VITALS (
                         VITAL_ID            INT AUTO_INCREMENT NOT NULL,
                         PATIENT_ID          INT                NOT NULL,
@@ -65,7 +84,9 @@ CREATE TABLE VITALS (
                             ON UPDATE CASCADE
 );
 
--- Vital Thresholds table
+-- VITAL_THRESHOLDS table
+-- Purpose: Stores threshold ranges for each vital category (e.g., blood pressure, heart rate)
+--          to define normal and abnormal levels for alerts.
 CREATE TABLE VITAL_THRESHOLDS (
                                   Thresholds_ID     INT AUTO_INCREMENT NOT NULL,
                                   Vital_category    VARCHAR(50)        NOT NULL,
@@ -137,7 +158,9 @@ END;
 DELIMITER ;
 
 
--- Patch Device table
+-- PATCH_DEVICE table
+-- Purpose: Tracks wearable patch devices for each patient, including device status,
+--          associated thresholds, and patient address for monitoring.
 CREATE TABLE PATCH_DEVICE (
                               Device_ID            INT AUTO_INCREMENT NOT NULL,
                               Patient_ID           INT                NOT NULL,
@@ -153,7 +176,12 @@ CREATE TABLE PATCH_DEVICE (
                                   ON DELETE SET NULL
                                   ON UPDATE CASCADE
 );
--- Alerts table
+
+
+
+-- ALERTS table
+-- Purpose: Records alerts generated for patients based on abnormal vital signs,
+--          including alert type, timestamp, and resolution status.
 CREATE TABLE ALERTS (
                         ALERT_ID            INT AUTO_INCREMENT NOT NULL,
                         PATIENT_ID          INT                NOT NULL,
@@ -172,7 +200,9 @@ CREATE TABLE ALERTS (
 
 
 
--- Emergency Dispatch table
+-- EMERGENCY_DISPATCH table
+-- Purpose: Manages dispatch records for emergency alerts, capturing details such as dispatch
+--          time, arrival time, status, and associated patient details.
 CREATE TABLE EMERGENCY_DISPATCH (
                                     Dispatch_ID        INT AUTO_INCREMENT NOT NULL,
                                     Patient_ID         INT                NOT NULL,
@@ -192,7 +222,9 @@ CREATE TABLE EMERGENCY_DISPATCH (
 );
 
 
--- Messages table
+-- MESSAGES table
+-- Purpose: Stores messages related to patient health status, sent by providers, with each
+--          message linked to a provider and timestamped.
 CREATE TABLE MESSAGES (
                           Message_ID         INT AUTO_INCREMENT NOT NULL,
                           Message_Content    TEXT               NOT NULL,
@@ -204,7 +236,9 @@ CREATE TABLE MESSAGES (
                               ON UPDATE CASCADE
 );
 
--- User Authorization table
+-- USER_AUTHORIZATION table
+-- Purpose: Manages user access to the system, including their email, phone number,
+--          unique access code, and activation status.
 CREATE TABLE USER_AUTHORIZATION (
                                     User_ID            INT AUTO_INCREMENT NOT NULL,
                                     Email              VARCHAR(100)       NOT NULL,
@@ -217,7 +251,9 @@ CREATE TABLE USER_AUTHORIZATION (
                                         ON UPDATE CASCADE
 );
 
--- Test Results table
+-- TEST_RESULTS table
+-- Purpose: Logs test results for patients, linking them with alerts and providers,
+--          including test outcome and date.
 CREATE TABLE TEST_RESULTS (
                               Test_Result_ID     INT AUTO_INCREMENT NOT NULL,
                               Patient_ID         INT                NOT NULL,

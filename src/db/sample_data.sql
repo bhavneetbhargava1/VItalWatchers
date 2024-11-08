@@ -1,9 +1,13 @@
+-- ***************************
+-- Part B: Sample Data Insertion
+-- ***************************
 USE VitalWatchers;
 
 
 
 
--- Insert sample data into PATIENTS table
+-- Sample data for PATIENTS table
+-- Summary: Inserts sample data for patients with various health conditions and statuses.
 INSERT INTO PATIENTS (First_name, Last_name, Age, Patient_phone_num, Medical_history, Patient_status, Patient_address, Gender, Email)
 VALUES
     ('John', 'Doe', 45, '555-1234', 'None', 'Healthy', '123 Main St', 'Male', 'john.doe@example.com'),
@@ -25,7 +29,8 @@ VALUES
 
 
 
--- Insert sample data into PROVIDERS table
+-- Sample data for PROVIDERS table
+-- Summary: Inserts sample provider data, including provider names and contact numbers
 INSERT INTO PROVIDERS (First_name, Last_name, Provider_phone_no)
 VALUES
     ('Dr. Adam', 'Carter', '555-1122'),
@@ -42,7 +47,8 @@ VALUES
 
 
 
--- Insert sample data into HEALTH_SUMMARY table
+-- Sample data for HEALTH_SUMMARY table
+-- Summary: Stores health summary records for patients, including vitals, treatments, and provider notes.
 INSERT INTO HEALTH_SUMMARY (Patient_ID, Date, Vital_signs, Treatments, Provider_notes, Provider_ID)
 VALUES
     (1, '2024-10-01', 'BP_Normal', 'Daily medication', 'Stable', 1),
@@ -65,7 +71,9 @@ VALUES
 
 
 
--- Insert sample data into VITALS table
+-- VITALS table
+-- Purpose: Stores patient vital information, including blood pressure, heart rate, body temperature,
+--          oxygen saturation, and breathing rate. Each entry is timestamped and linked to a device.
 INSERT INTO VITALS (PATIENT_ID, BLOOD_PRESSURE, HEART_RATE, BODY_TEMPERATURE, OXYGEN_SATURATION, BREATHING_RATE, TIME_STAMP, D_TRIGGER)
 VALUES
     (1, 120.5, 80.0, 98.6, 98.0, 16.0, '2024-10-01 08:00:00', 1),
@@ -111,7 +119,10 @@ VALUES
     ('Breathing Rate', 'BR_Critical', 30.1, 40.0);
 
 
--- Insert sample data into PATCH_DEVICE table
+
+-- PATCH_DEVICE table
+-- Purpose: Tracks wearable patch devices for each patient, including device status,
+--          associated thresholds, and patient address for monitoring.
 INSERT INTO PATCH_DEVICE (Patient_ID, Patient_add, Vital_Status, Patch_Status, Thresholds_ID)
 VALUES
     (1, '123 Main St', 'BP_Normal', 'Active', 1),
@@ -130,7 +141,11 @@ VALUES
     (14, '1111 Birch Rd', 'OS_Low', 'Maintenance', 6),
     (15, '1212 Palm Dr', 'BP_Critical', 'Active', 5);
 
--- Insert sample data into ALERTS table
+
+
+-- ALERTS table
+-- Purpose: Records alerts generated for patients based on abnormal vital signs,
+--          including alert type, timestamp, and resolution status.
 INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
 VALUES
     (1, 'NORMAL', '2024-10-04 10:00:00', 'F', 1),
@@ -153,13 +168,9 @@ VALUES
 
 
 
-
-
-
-
-
-
--- Insert sample data into EMERGENCY_DISPATCH table
+-- EMERGENCY_DISPATCH table
+-- Purpose: Manages dispatch records for emergency alerts, capturing details such as dispatch
+--          time, arrival time, status, and associated patient details.
 INSERT INTO EMERGENCY_DISPATCH (Patient_ID, Alert_ID, Dispatch_time, Arrival_time, Status, Notes, Patient_address)
 VALUES
     (1, 1, '2024-10-04 10:05:00', '2024-10-04 10:30:00', 'Arrived', 'Emergency handled', '123 Main St'),
@@ -181,7 +192,9 @@ VALUES
 
 
 
--- Insert sample data into MESSAGES table
+-- MESSAGES table
+-- Purpose: Stores messages related to patient health status, sent by providers, with each
+--          message linked to a provider and timestamped.
 INSERT INTO MESSAGES (Message_Content, Time_Sent, Sender_ID)
 VALUES
     ('Patient with BP_Normal readings; patch is active and functioning normally.', '2024-10-01 08:00:00', 1),
@@ -202,7 +215,9 @@ VALUES
 
 
 
--- Insert sample data into USER_AUTHORIZATION table
+-- USER_AUTHORIZATION table
+-- Purpose: Manages user access to the system, including their email, phone number,
+--          unique access code, and activation status.
 INSERT INTO USER_AUTHORIZATION (Email, Patient_phone_num, User_code, Activation)
 VALUES
     ('john.doe@example.com', '555-1234', 'A1234', TRUE),
@@ -224,7 +239,9 @@ VALUES
 
 
 
--- Insert sample data into TEST_RESULTS table
+-- TEST_RESULTS table
+-- Purpose: Logs test results for patients, linking them with alerts and providers,
+--          including test outcome and date.
 INSERT INTO TEST_RESULTS (Patient_ID, Provider_ID, Alert_ID, Result, Test_date)
 VALUES
     (1, 1, 1, 'Positive', '2024-10-01'),
