@@ -15,32 +15,35 @@ FROM PATIENTS p
               ON h.Provider_ID = pr.Provider_ID;
 
 
--- SQL Query 2: Nested Query with IN operator and GROUP BY clause
--- Purpose: Retrieve active patch devices monitoring patients with critical health conditions,
---          grouping by device and health condition.
--- Summary of Result: Displays Device ID, patch status, patient name, critical health condition,
---                    provider notes, and provider's name if available.
+-- SQL Query 2: Retrieve Patient Alert Information for All Alert Types with Active Patch Devices, Grouped by Alert Type and Device
+-- Purpose: This query fetches data on patients who have unresolved alerts (all types), active patch devices,
+--          and includes provider information related to each patient. It groups results by device ID and alert type
+--          to show the frequency of each alert type per device.
+-- Summary of Result: Displays the first and last names of patients, device ID, patch status, alert type, count of each
+--                    alert type per device, and a list of associated providers for each patient group.
+
 SELECT
+    p.First_name,
+    p.Last_name,
     pd.Device_ID,
     pd.Patch_Status,
-    CONCAT(p.First_name, ' ', p.Last_name) AS Patient_Name,
-    hs.Vital_signs AS Health_Condition,
-    MAX(hs.Provider_notes) AS Provider_Notes,
-    CONCAT(pr.First_name, ' ', pr.Last_name) AS Provider_Name
+    a.ALERT_TYPE,
+    COUNT(a.ALERT_TYPE) AS Alert_Count,
+    GROUP_CONCAT(DISTINCT CONCAT(pro.First_name, ' ', pro.Last_name) SEPARATOR ', ') AS Providers
 FROM
-    PATCH_DEVICE pd
-        JOIN PATIENTS p ON pd.Patient_ID = p.Patient_ID
-        JOIN HEALTH_SUMMARY hs ON pd.Patient_ID = hs.Patient_ID
-        LEFT JOIN PROVIDERS pr ON hs.Provider_ID = pr.Provider_ID
+    PATIENTS AS p
+        JOIN ALERTS AS a ON p.Patient_ID = a.PATIENT_ID
+        JOIN PATCH_DEVICE AS pd ON p.Patient_ID = pd.Patient_ID
+        LEFT JOIN HEALTH_SUMMARY AS hs ON p.Patient_ID = hs.Patient_ID
+        LEFT JOIN PROVIDERS AS pro ON hs.Provider_ID = pro.Provider_ID
 WHERE
-    pd.Patch_Status = 'Active'
-  AND hs.Vital_signs IN (
-    SELECT Vital_signs
-    FROM HEALTH_SUMMARY
-    WHERE Vital_signs IN ('High blood pressure', 'High heart rate')
-)
+    a.RESOLVED = 'F'
+  AND pd.Patch_Status = 'Active'
 GROUP BY
-    pd.Device_ID, pd.Patch_Status, p.Patient_ID, hs.Vital_signs, pr.Provider_ID;
+    pd.Device_ID, a.ALERT_TYPE
+ORDER BY
+    a.ALERT_TYPE, Alert_Count DESC;
+
 
 
 -- SQL Query 3: Correlated Nested Query with Proper Aliasing

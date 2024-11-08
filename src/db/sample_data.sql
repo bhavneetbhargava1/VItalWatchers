@@ -90,12 +90,12 @@ VALUES
 -- Insert sample data into ALERTS table
 INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
 VALUES
-    (1, 'NORMAL', '2024-10-04 10:00:00', 'T', 1),
+    (1, 'NORMAL', '2024-10-04 10:00:00', 'F', 1),
     (2, 'CRITICAL', '2024-10-05 11:30:00', 'F', 2),
     (3, 'NORMAL', '2024-10-06 08:45:00', 'T', 3),
     (4, 'HIGH', '2024-10-07 07:00:00', 'F', 4),
     (5, 'ELEVATED', '2024-10-08 06:30:00', 'T', 5),
-    (6, 'NORMAL', '2024-10-09 08:15:00', 'T', 6),
+    (6, 'NORMAL', '2024-10-09 08:15:00', 'F', 6),
     (7, 'HIGH', '2024-10-10 09:30:00', 'F', 7),
     (8, 'NORMAL', '2024-10-11 08:00:00', 'T', 8),
     (9, 'ELEVATED', '2024-10-12 09:30:00', 'T', 9),
@@ -228,7 +228,7 @@ VALUES
 INSERT INTO PATCH_DEVICE (Patient_ID, Patient_add, Vital_Status, Patch_Status, Thresholds_ID)
 VALUES
     (1, '123 Main St', 'BP_Normal', 'Active', 1),
-    (2, '456 Elm St', 'BP_Critical', 'Inactive', 5),
+    (2, '456 Elm St', 'BP_Critical', 'Active', 5),
     (3, '789 Maple Ave', 'BP_High', 'Maintenance', 3),
     (4, '101 Oak St', 'BP_Normal', 'Active', 1),
     (5, '202 Pine St', 'BP_Critical', 'Inactive', 5),
