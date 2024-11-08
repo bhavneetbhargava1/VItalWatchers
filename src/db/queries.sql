@@ -1,18 +1,48 @@
 USE VitalWatchers;
 
 -- Query 1: Triple Table Join
--- Purpose: Retrieve patient details, their health summary, and provider notes.
--- Summary of Result: This query returns the Patient ID, full name, date of their latest health summary,
---                    and any provider notes associated with that summary.
-SELECT DISTINCT p.Patient_ID,
-                CONCAT(p.First_name, ' ', p.Last_name) AS Patient_Name,
-                h.Date,
-                h.Provider_notes
-FROM PATIENTS p
-         JOIN HEALTH_SUMMARY h
-              ON p.Patient_ID = h.Patient_ID
-         JOIN PROVIDERS pr
-              ON h.Provider_ID = pr.Provider_ID;
+-- Purpose:
+-- This query retrieves a comprehensive summary of authorized patients, including their personal details, authorization status,
+-- and latest health check information, along with details about the healthcare provider associated with their most recent visit.
+--
+-- Summary of Result:
+-- 1. Patient authorization details, including user ID, email, phone number, authorization code, and activation status.
+-- 2. Personal information of each patient, including first and last name, age, and medical history.
+-- 3. Latest health summary details for each patient, such as the date of the health check, vital signs, treatments provided, and provider notes.
+-- 4. Information about the healthcare provider who conducted or reviewed the patient’s latest health summary, including the provider's first and last name.
+--
+-- The result is ordered first by activation status (showing active users first), then alphabetically by patient name, and finally by the most recent health check date for each patient.
+SELECT
+    UA.User_ID,
+    UA.Email AS Authorized_Email,
+    UA.Patient_phone_num AS Authorized_Phone,
+    UA.User_code AS Authorization_Code,
+    UA.Activation AS Is_Activated,
+    P.First_name AS Patient_First_Name,
+    P.Last_name AS Patient_Last_Name,
+    P.Age AS Patient_Age,
+    P.Medical_history AS Medical_History,
+    HS.Date AS Last_Health_Check_Date,
+    HS.Vital_signs AS Vital_Signs,
+    HS.Treatments AS Treatments_Provided,
+    HS.Provider_notes AS Provider_Notes,
+    PR.First_name AS Provider_First_Name,
+    PR.Last_name AS Provider_Last_Name
+FROM
+    USER_AUTHORIZATION AS UA
+        JOIN
+    PATIENTS AS P ON UA.Email = P.Email AND UA.Patient_phone_num = P.Patient_phone_num
+        JOIN
+    HEALTH_SUMMARY AS HS ON P.Patient_ID = HS.Patient_ID
+        JOIN
+    PROVIDERS AS PR ON HS.Provider_ID = PR.Provider_ID
+ORDER BY
+    UA.Activation DESC,
+    P.Last_name ASC,
+    P.First_name ASC,
+    HS.Date DESC;
+
+
 
 
 -- SQL Query 2: Retrieve Patient Alert Information for All Alert Types with Active Patch Devices, Grouped by Alert Type and Device
