@@ -102,16 +102,22 @@ SELECT pname.Patient_ID,
        pname.First_name,
        pname.Last_name
 FROM PATIENTS pname
-JOIN VITALS v ON pname.Patient_ID = v.PATIENT_ID
-WHERE v.HEART_RATE > 100
-
+WHERE pname.Patient_ID IN (
+    SELECT v.PATIENT_ID
+    FROM VITALS v
+    WHERE v.HEART_RATE > 100
+)
 INTERSECT
 SELECT pname.Patient_ID,
        pname.First_name,
        pname.Last_name
 FROM PATIENTS pname
-JOIN ALERTS a ON pname.Patient_ID = a.PATIENT_ID
-WHERE a.ALERT_TYPE = 'HIGH';
+WHERE pname.Patient_ID IN (
+    SELECT a.PATIENT_ID
+    FROM ALERTS a
+    WHERE a.ALERT_TYPE = 'HIGH'
+);
+
 
 -- Query 6: Create your own non-trivial SQL query (must use at least two tables in FROM clause)
 -- Purpose: The purpose of this SQL query is to retrieve detailed health information for patients,
