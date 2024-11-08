@@ -39,10 +39,23 @@ FROM
 WHERE
     a.RESOLVED = 'F'
   AND pd.Patch_Status = 'Active'
+  AND p.Patient_ID IN (
+    SELECT Patient_ID
+    FROM ALERTS
+    WHERE ALERT_TYPE IN ('CRITICAL', 'HIGH', 'NORMAL')
+      AND RESOLVED = 'F'
+)
 GROUP BY
-    pd.Device_ID, a.ALERT_TYPE
+    p.First_name, p.Last_name, pd.Device_ID, pd.Patch_Status, a.ALERT_TYPE
 ORDER BY
-    a.ALERT_TYPE, Alert_Count DESC;
+    CASE
+        WHEN a.ALERT_TYPE = 'CRITICAL' THEN 1
+        WHEN a.ALERT_TYPE = 'HIGH' THEN 2
+        WHEN a.ALERT_TYPE = 'NORMAL' THEN 3
+        END,
+    p.Last_name;
+
+
 
 
 
