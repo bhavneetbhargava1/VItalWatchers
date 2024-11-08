@@ -272,43 +272,56 @@ ORDER BY
     COUNT(DISTINCT EMERGENCY_DISPATCH.Dispatch_time) DESC,
     MIN(VITALS.OXYGEN_SATURATION) ASC;
 
--- Query 10: Create non-trivial SQL query using nine tables in FROM clause, including nine tables, and aliased names
--- Purpose: This query provides patients who have unresolved high alerts, including their healthcare provider details, latest vital signs,
---          patch device status, and any emergency dispatch actions taken in response to the alert.
--- Summary of Result: It returns Patient_ID, full Patient_Name, Alert_ID, alert timestamp, provider name, recent vital readings, patch
---                    device status, and emergency dispatch details if applicable.
+-- SQL Query 10: Create your own non-trivial SQL query, must use at least three tables in FROM clause must use aliasing
+--               or renaming for at least once throughout SQL queryRetrieve Patient Vital Details with Unresolved High Alerts
+--               and Emergency Dispatch Actions
+-- Purpose: To provide patients with active patch devices who have unresolved high alerts, including provider details and
+--          emergency dispatch actions taken in response to those alerts.
+-- Summary of Result: Returns the Patient_ID, Patient_Name, alert timestamp, vital threshold status, patch status, provider name,
+--                    and emergency dispatch details if an action was taken.
+
 SELECT
     P.Patient_ID AS PatientID,
     CONCAT(P.First_name, ' ', P.Last_name) AS Patient_Name,
-    A.ALERT_ID AS AlertID,
-    A.TIME_STAMP AS Alert_Timestamp,
-    CONCAT(PR.First_name, ' ', PR.Last_name) AS Provider_Name,
-
-    V.BLOOD_PRESSURE,
-    V.HEART_RATE,
-    V.OXYGEN_SATURATION,
-
-    PD.Vital_Status AS Patch_Vital_Status,
-    PD.Patch_Status AS Patch_Device_Status,
-
+    MAX(A.TIME_STAMP) AS Most_Recent_Alert_Timestamp,
+    GROUP_CONCAT(DISTINCT
+                 CASE
+                     WHEN V.BLOOD_PRESSURE > (SELECT Maximum_value FROM VITAL_THRESHOLDS WHERE Vital_category = 'Blood Pressure' AND Vital_level = 'BP_Normal')
+                         OR V.BLOOD_PRESSURE < (SELECT Minimum_value FROM VITAL_THRESHOLDS WHERE Vital_category = 'Blood Pressure' AND Vital_level = 'BP_Normal')
+                         THEN 'Blood Pressure'
+                     WHEN V.HEART_RATE > (SELECT Maximum_value FROM VITAL_THRESHOLDS WHERE Vital_category = 'Heart Rate' AND Vital_level = 'HR_Normal')
+                         OR V.HEART_RATE < (SELECT Minimum_value FROM VITAL_THRESHOLDS WHERE Vital_category = 'Heart Rate' AND Vital_level = 'HR_Normal')
+                         THEN 'Heart Rate'
+                     WHEN V.BODY_TEMPERATURE > (SELECT Maximum_value FROM VITAL_THRESHOLDS WHERE Vital_category = 'Body Temperature' AND Vital_level = 'BT_Low')
+                         OR V.BODY_TEMPERATURE < (SELECT Minimum_value FROM VITAL_THRESHOLDS WHERE Vital_category = 'Body Temperature' AND Vital_level = 'BT_Low')
+                         THEN 'Body Temperature'
+                     WHEN V.OXYGEN_SATURATION > (SELECT Maximum_value FROM VITAL_THRESHOLDS WHERE Vital_category = 'Oxygen Saturation' AND Vital_level = 'OS_Normal')
+                         OR V.OXYGEN_SATURATION < (SELECT Minimum_value FROM VITAL_THRESHOLDS WHERE Vital_category = 'Oxygen Saturation' AND Vital_level = 'OS_Normal')
+                         THEN 'Oxygen Saturation'
+                     WHEN V.BREATHING_RATE > (SELECT Maximum_value FROM VITAL_THRESHOLDS WHERE Vital_category = 'Breathing Rate' AND Vital_level = 'BR_High')
+                         OR V.BREATHING_RATE < (SELECT Minimum_value FROM VITAL_THRESHOLDS WHERE Vital_category = 'Breathing Rate' AND Vital_level = 'BR_High')
+                         THEN 'Breathing Rate'
+                     END
+                 ORDER BY 1 ASC) AS Exceeded_Critical_Vitals,
+    PD.Patch_Status AS Patch_Status,
+    IFNULL(CONCAT(PR.First_name, ' ', PR.Last_name), 'No Provider Assigned') AS Provider_Name,
     ED.Dispatch_time AS Dispatch_Time,
-    ED.Status AS Dispatch_Status,
-
-    TR.Result AS Test_Result,
-    TR.Test_date AS Test_Date
-
+    ED.Status AS Dispatch_Status
 FROM
     PATIENTS P
         JOIN ALERTS A ON P.Patient_ID = A.PATIENT_ID
-        JOIN HEALTH_SUMMARY HS ON P.Patient_ID = HS.Patient_ID
-        JOIN PROVIDERS PR ON HS.Provider_ID = PR.Provider_ID
-        LEFT JOIN VITALS V ON P.Patient_ID = V.PATIENT_ID
-        LEFT JOIN PATCH_DEVICE PD ON P.Patient_ID = PD.Patient_ID
+        JOIN PATCH_DEVICE PD ON P.Patient_ID = PD.Patient_ID
+        LEFT JOIN HEALTH_SUMMARY HS ON P.Patient_ID = HS.Patient_ID
+        LEFT JOIN PROVIDERS PR ON HS.Provider_ID = PR.Provider_ID
         LEFT JOIN EMERGENCY_DISPATCH ED ON A.ALERT_ID = ED.Alert_ID
-        LEFT JOIN TEST_RESULTS TR ON P.Patient_ID = TR.Patient_ID
-
+        LEFT JOIN VITALS V ON P.Patient_ID = V.PATIENT_ID
 WHERE
     A.ALERT_TYPE = 'HIGH'
   AND A.RESOLVED = 'F'
-  AND (ED.Status IS NULL OR ED.Status <> 'Resolved');
+  AND PD.Patch_Status = 'Active'
+GROUP BY
+    P.Patient_ID, PD.Patch_Status, PR.Provider_ID, ED.Dispatch_time, ED.Status
+ORDER BY
+    Most_Recent_Alert_Timestamp DESC;
+
 
