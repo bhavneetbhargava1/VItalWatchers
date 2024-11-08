@@ -50,14 +50,14 @@ GROUP BY
 SELECT DISTINCT
     p.First_name,
     p.Last_name,
-    p.Status,
+    p.Patient_status,
     a.ALERT_TYPE,
     a.TIME_STAMP
 FROM
     PATIENTS AS p
         JOIN ALERTS AS a ON p.Patient_ID = a.PATIENT_ID
 WHERE
-    p.Status IN ('Under Treatment', 'Sick')
+    p.Patient_status IN ('Under Treatment', 'Sick')
   AND a.ALERT_TYPE = 'HIGH'
   AND a.RESOLVED = 'F'
   AND EXISTS (

@@ -69,7 +69,7 @@ CREATE TABLE VITALS (
 CREATE TABLE ALERTS (
                         ALERT_ID            INT AUTO_INCREMENT NOT NULL,
                         PATIENT_ID          INT                NOT NULL,
-                        ALERT_TYPE          VARCHAR(10)        NOT NULL CHECK (ALERT_TYPE IN ('LOW', 'MEDIUM', 'HIGH')),
+                        ALERT_TYPE          VARCHAR(10)        NOT NULL CHECK (ALERT_TYPE IN ('LOW', 'MEDIUM', 'HIGH', 'NORMAL', 'CRITICAL', 'ELEVATED')),
                         TIME_STAMP          DATETIME           NOT NULL,
                         RESOLVED            CHAR(1)            NOT NULL DEFAULT 'F',
                         DEVICE_ID           INT                NOT NULL,
@@ -156,7 +156,7 @@ CREATE TABLE EMERGENCY_DISPATCH (
                                     Dispatch_ID        INT AUTO_INCREMENT NOT NULL,
                                     Patient_ID         INT                NOT NULL,
                                     Alert_ID           INT                NOT NULL,
-                                    Dispatch_time      DATETIME           NOT NULL,
+                                    Dispatch_time      DATETIME           DEFAULT NULL,
                                     Arrival_time       DATETIME           DEFAULT NULL,
                                     Status             VARCHAR(20)        NOT NULL CHECK (Status IN ('Pending', 'Dispatched', 'Arrived', 'Resolved')),
                                     Notes              TEXT,
@@ -169,6 +169,7 @@ CREATE TABLE EMERGENCY_DISPATCH (
                                         ON DELETE CASCADE
                                         ON UPDATE CASCADE
 );
+
 
 -- Messages table
 CREATE TABLE MESSAGES (
@@ -224,10 +225,10 @@ CREATE TABLE PATCH_DEVICE (
                               Patient_add          VARCHAR(100)       NOT NULL,
                               Thresholds_ID        INT                DEFAULT NULL,
                               PRIMARY KEY (Device_ID),
-                              FOREIGN KEY (Patient_ID, Patient_add) REFERENCES PATIENTS(Patient_ID, Patient_address)
+                              FOREIGN KEY (Patient_ID) REFERENCES PATIENTS(Patient_ID)
                                   ON DELETE CASCADE
                                   ON UPDATE CASCADE,
-                              FOREIGN KEY (Thresholds_ID, Vital_Status) REFERENCES VITAL_THRESHOLDS(Thresholds_ID, Vital_level)
+                              FOREIGN KEY (Thresholds_ID) REFERENCES VITAL_THRESHOLDS(Thresholds_ID)
                                   ON DELETE SET NULL
                                   ON UPDATE CASCADE
 );
