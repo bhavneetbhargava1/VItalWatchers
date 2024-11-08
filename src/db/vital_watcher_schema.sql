@@ -58,22 +58,8 @@ CREATE TABLE VITALS (
                         OXYGEN_SATURATION   DECIMAL(5, 2)      DEFAULT 100 NOT NULL CHECK (OXYGEN_SATURATION > 80 AND OXYGEN_SATURATION <= 100),
                         BREATHING_RATE      DECIMAL(5, 2)      DEFAULT 16 NOT NULL CHECK (BREATHING_RATE > 10 AND BREATHING_RATE < 40),
                         TIME_STAMP          DATETIME           NOT NULL,
-                        DEVICE_ID           INT                NOT NULL,
+                        D_TRIGGER           INT                NOT NULL,
                         PRIMARY KEY (VITAL_ID),
-                        FOREIGN KEY (PATIENT_ID) REFERENCES PATIENTS(Patient_ID)
-                            ON DELETE CASCADE
-                            ON UPDATE CASCADE
-);
-
--- Alerts table
-CREATE TABLE ALERTS (
-                        ALERT_ID            INT AUTO_INCREMENT NOT NULL,
-                        PATIENT_ID          INT                NOT NULL,
-                        ALERT_TYPE          VARCHAR(10)        NOT NULL CHECK (ALERT_TYPE IN ('LOW', 'MEDIUM', 'HIGH', 'NORMAL', 'CRITICAL', 'ELEVATED')),
-                        TIME_STAMP          DATETIME           NOT NULL,
-                        RESOLVED            CHAR(1)            NOT NULL DEFAULT 'F',
-                        DEVICE_ID           INT                NOT NULL,
-                        PRIMARY KEY (ALERT_ID),
                         FOREIGN KEY (PATIENT_ID) REFERENCES PATIENTS(Patient_ID)
                             ON DELETE CASCADE
                             ON UPDATE CASCADE
@@ -124,31 +110,66 @@ BEGIN
     -- Check each vital and insert alerts if they exceed general thresholds
     IF NEW.BLOOD_PRESSURE < min_bp OR NEW.BLOOD_PRESSURE > max_bp THEN
         INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
-        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.DEVICE_ID);
+        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.D_TRIGGER);
     END IF;
 
     IF NEW.HEART_RATE < min_hr OR NEW.HEART_RATE > max_hr THEN
         INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
-        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.DEVICE_ID);
+        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.D_TRIGGER);
     END IF;
 
     IF NEW.BODY_TEMPERATURE < min_temp OR NEW.BODY_TEMPERATURE > max_temp THEN
         INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
-        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.DEVICE_ID);
+        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.D_TRIGGER);
     END IF;
 
     IF NEW.OXYGEN_SATURATION < min_oxy OR NEW.OXYGEN_SATURATION > max_oxy THEN
         INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
-        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.DEVICE_ID);
+        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.D_TRIGGER);
     END IF;
 
     IF NEW.BREATHING_RATE < min_breath OR NEW.BREATHING_RATE > max_breath THEN
         INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
-        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.DEVICE_ID);
+        VALUES (NEW.PATIENT_ID, 'HIGH', NEW.TIME_STAMP, 'F', NEW.D_TRIGGER);
     END IF;
 END;
 
 DELIMITER ;
+
+
+-- Patch Device table
+CREATE TABLE PATCH_DEVICE (
+                              Device_ID            INT AUTO_INCREMENT NOT NULL,
+                              Patient_ID           INT                NOT NULL,
+                              Vital_Status         VARCHAR(20),
+                              Patch_Status         VARCHAR(20)        NOT NULL CHECK (Patch_Status IN ('Active', 'Inactive', 'Maintenance')),
+                              Patient_add          VARCHAR(100)       NOT NULL,
+                              Thresholds_ID        INT                DEFAULT NULL,
+                              PRIMARY KEY (Device_ID),
+                              FOREIGN KEY (Patient_ID) REFERENCES PATIENTS(Patient_ID)
+                                  ON DELETE CASCADE
+                                  ON UPDATE CASCADE,
+                              FOREIGN KEY (Thresholds_ID) REFERENCES VITAL_THRESHOLDS(Thresholds_ID)
+                                  ON DELETE SET NULL
+                                  ON UPDATE CASCADE
+);
+-- Alerts table
+CREATE TABLE ALERTS (
+                        ALERT_ID            INT AUTO_INCREMENT NOT NULL,
+                        PATIENT_ID          INT                NOT NULL,
+                        ALERT_TYPE          VARCHAR(10)        NOT NULL CHECK (ALERT_TYPE IN ('LOW', 'MEDIUM', 'HIGH', 'NORMAL', 'CRITICAL', 'ELEVATED')),
+                        TIME_STAMP          DATETIME           NOT NULL,
+                        RESOLVED            CHAR(1)            NOT NULL DEFAULT 'F',
+                        DEVICE_ID           INT                NOT NULL,
+                        PRIMARY KEY (ALERT_ID),
+                        FOREIGN KEY (PATIENT_ID) REFERENCES PATIENTS(Patient_ID)
+                            ON DELETE CASCADE
+                            ON UPDATE CASCADE,
+                        FOREIGN KEY (DEVICE_ID) REFERENCES PATCH_DEVICE(Device_ID)
+                            ON DELETE CASCADE
+                            ON UPDATE CASCADE
+);
+
 
 
 -- Emergency Dispatch table
@@ -216,20 +237,4 @@ CREATE TABLE TEST_RESULTS (
                                   ON UPDATE CASCADE
 );
 
--- Patch Device table
-CREATE TABLE PATCH_DEVICE (
-                              Device_ID            INT AUTO_INCREMENT NOT NULL,
-                              Patient_ID           INT                NOT NULL,
-                              Vital_Status         VARCHAR(20),
-                              Patch_Status         VARCHAR(20)        NOT NULL CHECK (Patch_Status IN ('Active', 'Inactive', 'Maintenance')),
-                              Patient_add          VARCHAR(100)       NOT NULL,
-                              Thresholds_ID        INT                DEFAULT NULL,
-                              PRIMARY KEY (Device_ID),
-                              FOREIGN KEY (Patient_ID) REFERENCES PATIENTS(Patient_ID)
-                                  ON DELETE CASCADE
-                                  ON UPDATE CASCADE,
-                              FOREIGN KEY (Thresholds_ID) REFERENCES VITAL_THRESHOLDS(Thresholds_ID)
-                                  ON DELETE SET NULL
-                                  ON UPDATE CASCADE
-);
 

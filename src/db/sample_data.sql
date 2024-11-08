@@ -66,7 +66,7 @@ VALUES
 
 
 -- Insert sample data into VITALS table
-INSERT INTO VITALS (PATIENT_ID, BLOOD_PRESSURE, HEART_RATE, BODY_TEMPERATURE, OXYGEN_SATURATION, BREATHING_RATE, TIME_STAMP, DEVICE_ID)
+INSERT INTO VITALS (PATIENT_ID, BLOOD_PRESSURE, HEART_RATE, BODY_TEMPERATURE, OXYGEN_SATURATION, BREATHING_RATE, TIME_STAMP, D_TRIGGER)
 VALUES
     (1, 120.5, 80.0, 98.6, 98.0, 16.0, '2024-10-01 08:00:00', 1),
     (2, 190.0, 90.0, 98.2, 96.0, 18.0, '2024-10-02 09:00:00', 2),
@@ -84,8 +84,51 @@ VALUES
     (14, 110.0, 80.0, 97.9, 85.0, 18.0, '2024-10-14 13:00:00', 14),
     (15, 145.0, 90.0, 98.3, 97.0, 22.0, '2024-10-14 14:00:00', 15);
 
+-- VITAL_THRESHOLDS table
+-- Purpose: Stores threshold ranges for each vital category (e.g., blood pressure, heart rate)
+--          to define normal and abnormal levels for alerts.
+INSERT INTO VITAL_THRESHOLDS (Vital_category, Vital_level, Minimum_value, Maximum_value)
+VALUES
+    ('Blood Pressure', 'BP_Normal', 90.0, 120.0),
+    ('Blood Pressure', 'BP_Elevated', 121.0, 129.0),
+    ('Blood Pressure', 'BP_High', 130.0, 139.0),
+    ('Blood Pressure', 'BP_Very High', 140.0, 180.0),
+    ('Blood Pressure', 'BP_Critical', 181.0, 250.0),
+
+    ('Heart Rate', 'HR_Normal', 60.0, 100.0),
+    ('Heart Rate', 'HR_Low', 30.0, 59.9),
+    ('Heart Rate', 'HR_High', 101.0, 150.0),
+    ('Heart Rate', 'HR_Critical', 151.0, 200.0),
+
+    ('Body Temperature', 'BT_High Fever', 100.5, 103.0),
+    ('Body Temperature', 'BT_Low', 89.0, 96.9),
+
+    ('Oxygen Saturation', 'OS_Normal', 95.0, 100.0),
+    ('Oxygen Saturation', 'OS_Low', 90.0, 94.9),
+    ('Oxygen Saturation', 'OS_Critical', 80.0, 89.9),
+
+    ('Breathing Rate', 'BR_High', 20.1, 30.0),
+    ('Breathing Rate', 'BR_Critical', 30.1, 40.0);
 
 
+-- Insert sample data into PATCH_DEVICE table
+INSERT INTO PATCH_DEVICE (Patient_ID, Patient_add, Vital_Status, Patch_Status, Thresholds_ID)
+VALUES
+    (1, '123 Main St', 'BP_Normal', 'Active', 1),
+    (2, '456 Elm St', 'BP_Critical', 'Active', 5),
+    (3, '789 Maple Ave', 'BP_High', 'Maintenance', 3),
+    (4, '101 Oak St', 'BP_Normal', 'Active', 1),
+    (5, '202 Pine St', 'BP_Critical', 'Inactive', 5),
+    (6, '303 Cedar Ave', 'BP_Elevated', 'Maintenance', 2),
+    (7, '404 Birch Rd', 'BP_Normal', 'Active', 1),
+    (8, '505 Maple St', 'OS_Low', 'Inactive', 6),
+    (9, '606 Palm Dr', 'BP_Critical', 'Active', 5),
+    (10, '707 Spruce St', 'BT_Mild Fever', 'Maintenance', 7),
+    (11, '808 Oak St', 'BT_High Fever', 'Active', 4),
+    (12, '909 Maple St', 'BP_High', 'Inactive', 3),
+    (13, '1010 Cedar Ave', 'BP_Normal', 'Active', 1),
+    (14, '1111 Birch Rd', 'OS_Low', 'Maintenance', 6),
+    (15, '1212 Palm Dr', 'BP_Critical', 'Active', 5);
 
 -- Insert sample data into ALERTS table
 INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
@@ -110,29 +153,8 @@ VALUES
 
 
 
--- Insert sample data into VITAL_THRESHOLDS table
-INSERT INTO VITAL_THRESHOLDS (Vital_category, Vital_level, Minimum_value, Maximum_value)
-VALUES
-    ('Blood Pressure', 'BP_Normal', 90.0, 120.0),
-    ('Blood Pressure', 'BP_Elevated', 121.0, 129.0),
-    ('Blood Pressure', 'BP_High', 130.0, 139.0),
-    ('Blood Pressure', 'BP_Very High', 140.0, 180.0),
-    ('Blood Pressure', 'BP_Critical', 181.0, 250.0),
 
-    ('Heart Rate', 'HR_Normal', 60.0, 100.0),
-    ('Heart Rate', 'HR_Low', 30.0, 59.9),
-    ('Heart Rate', 'HR_High', 101.0, 150.0),
-    ('Heart Rate', 'HR_Critical', 151.0, 200.0),
 
-    ('Body Temperature', 'BT_High Fever', 100.5, 103.0),
-    ('Body Temperature', 'BT_Low', 89.0, 96.9),
-
-    ('Oxygen Saturation', 'OS_Normal', 95.0, 100.0),
-    ('Oxygen Saturation', 'OS_Low', 90.0, 94.9),
-    ('Oxygen Saturation', 'OS_Critical', 80.0, 89.9),
-
-    ('Breathing Rate', 'BR_High', 20.1, 30.0),
-    ('Breathing Rate', 'BR_Critical', 30.1, 40.0);
 
 
 
@@ -221,25 +243,4 @@ VALUES
     (14, 4, 14, 'Positive', '2024-10-14'),
     (15, 5, 15, 'Negative', '2024-10-15');
 
-
-
-
--- Insert sample data into PATCH_DEVICE table
-INSERT INTO PATCH_DEVICE (Patient_ID, Patient_add, Vital_Status, Patch_Status, Thresholds_ID)
-VALUES
-    (1, '123 Main St', 'BP_Normal', 'Active', 1),
-    (2, '456 Elm St', 'BP_Critical', 'Active', 5),
-    (3, '789 Maple Ave', 'BP_High', 'Maintenance', 3),
-    (4, '101 Oak St', 'BP_Normal', 'Active', 1),
-    (5, '202 Pine St', 'BP_Critical', 'Inactive', 5),
-    (6, '303 Cedar Ave', 'BP_Elevated', 'Maintenance', 2),
-    (7, '404 Birch Rd', 'BP_Normal', 'Active', 1),
-    (8, '505 Maple St', 'OS_Low', 'Inactive', 6),
-    (9, '606 Palm Dr', 'BP_Critical', 'Active', 5),
-    (10, '707 Spruce St', 'BT_Mild Fever', 'Maintenance', 7),
-    (11, '808 Oak St', 'BT_High Fever', 'Active', 4),
-    (12, '909 Maple St', 'BP_High', 'Inactive', 3),
-    (13, '1010 Cedar Ave', 'BP_Normal', 'Active', 1),
-    (14, '1111 Birch Rd', 'OS_Low', 'Maintenance', 6),
-    (15, '1212 Palm Dr', 'BP_Critical', 'Active', 5);
 
