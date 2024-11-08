@@ -103,7 +103,7 @@ SELECT pname.Patient_ID,
        pname.Last_name
 FROM PATIENTS pname
 JOIN VITALS v ON pname.Patient_ID = v.PATIENT_ID
-WHERE v.HEART_RATE > 70
+WHERE v.HEART_RATE > 100
 
 INTERSECT
 SELECT pname.Patient_ID,
