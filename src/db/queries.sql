@@ -137,9 +137,9 @@ SELECT
       pv.Provider_phone_no
 FROM
       PATIENTS pname
-JOIN
+        JOIN
       HEALTH_SUMMARY hs ON pname.Patient_ID = hs.Patient_ID
-JOIN
+        JOIN
       PROVIDERS pv ON hs.Provider_ID = pv.Provider_ID
 WHERE
       hs.Date >= '2024-10-01' AND hs.Date <= '2024-10-10'
