@@ -47,9 +47,14 @@ ORDER BY
 
 
 -- SQL Query 3: Correlated Nested Query with Proper Aliasing
--- Purpose: Retrieve patients who are 'Under Treatment' or 'Sick' and have an unresolved high-level alert with an active patch device.
--- Summary of Result: This query returns a list of patients who are either 'Under Treatment' or 'Sick'
---                    and have a high-level alert that is unresolved, with their patch device status as active.
+-- Purpose: To identify patients who are currently "Under Treatment" or "Sick" and have active, unresolved "HIGH" alerts.
+--          Additionally, the query ensures these patients have active patch devices.
+-- Summary of Result: The query returns the following information for each identified patient:
+--                * **First name:** The patient's first name.
+--                * **Last name:** The patient's last name.
+--                * **Patient status:** The patient's current health status (either "Under Treatment" or "Sick").
+--                * **Alert type:** The type of alert, which is "HIGH" in this case.
+--                * **Timestamp:** The timestamp of the alert.
 SELECT DISTINCT
     p.First_name,
     p.Last_name,
@@ -272,13 +277,23 @@ ORDER BY
     COUNT(DISTINCT EMERGENCY_DISPATCH.Dispatch_time) DESC,
     MIN(VITALS.OXYGEN_SATURATION) ASC;
 
+
+
+
+
 -- SQL Query 10: Create your own non-trivial SQL query, must use at least three tables in FROM clause must use aliasing
---               or renaming for at least once throughout SQL queryRetrieve Patient Vital Details with Unresolved High Alerts
---               and Emergency Dispatch Actions
--- Purpose: To provide patients with active patch devices who have unresolved high alerts, including provider details and
---          emergency dispatch actions taken in response to those alerts.
--- Summary of Result: Returns the Patient_ID, Patient_Name, alert timestamp, vital threshold status, patch status, provider name,
---                    and emergency dispatch details if an action was taken.
+--               or renaming for at least once throughout SQL query.
+-- Purpose: To identify patients with active patch devices who have unresolved high alerts. The query also retrieves details about
+--          the exceeded vital signs, assigned provider, and emergency dispatch actions taken.
+-- Summary of Result: The query returns a result set with the following columns:
+--                    PatientID: Unique identifier of the patient.
+--                    Patient_Name: Full name of the patient.
+--                    Most_Recent_Alert_Timestamp: Timestamp of the latest unresolved high alert.
+--                    Exceeded_Critical_Vitals: Comma-separated list of vital signs that have exceeded their normal thresholds.
+--                    Patch_Status: Current status of the patient's patch device.
+--                    Provider_Name: Name of the assigned provider, or "No Provider Assigned" if none.
+--                    Dispatch_Time: Timestamp of the emergency dispatch action.
+--                    Dispatch_Status: Status of the emergency dispatch action.
 
 SELECT
     P.Patient_ID AS PatientID,
