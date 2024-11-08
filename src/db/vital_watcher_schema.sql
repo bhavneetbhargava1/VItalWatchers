@@ -9,7 +9,7 @@ CREATE TABLE PATIENTS (
                           Age                  INT                NOT NULL CHECK (Age > 0 AND Age <= 120),
                           Patient_phone_num    VARCHAR(15)        DEFAULT 'Not Provided',
                           Medical_history      VARCHAR(100)       DEFAULT 'No history provided',
-                          Patient_status               VARCHAR(20)        NOT NULL CHECK (Patient_status IN ('Healthy', 'Sick', 'Under Treatment')),
+                          Patient_status       VARCHAR(20)        NOT NULL CHECK (Patient_status IN ('Healthy', 'Sick', 'Under Treatment')),
                           Patient_address      VARCHAR(100)       NOT NULL,
                           Gender               VARCHAR(10)        NOT NULL CHECK (Gender IN ('Male', 'Female')),
                           Email                VARCHAR(100)       NOT NULL,
