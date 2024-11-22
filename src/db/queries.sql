@@ -21,8 +21,7 @@ SELECT
     UA.User_code AS Authorization_Code,
     UA.Activation AS Is_Activated,
     P.Email AS Authorized_Email,
-    P.First_name AS Patient_First_Name,
-    P.Last_name AS Patient_Last_Name,
+    P.Full_name AS Patient_Name,
     P.Age AS Patient_Age,
     P.Medical_history AS Medical_History,
     HS.Date AS Last_Health_Check_Date,
@@ -41,8 +40,7 @@ FROM
     PROVIDERS AS PR ON HS.Provider_ID = PR.Provider_ID
 ORDER BY
     UA.Activation DESC,
-    P.Last_name ASC,
-    P.First_name ASC,
+    P.Full_name ASC,
     HS.Date DESC;
 
 
