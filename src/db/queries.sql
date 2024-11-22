@@ -17,10 +17,10 @@ USE VitalWatchers;
 -- The result is ordered first by activation status (showing active users first), then alphabetically by patient name, and finally by the most recent health check date for each patient.
 SELECT
     UA.User_ID,
-    UA.Email AS Authorized_Email,
-    UA.Patient_phone_num AS Authorized_Phone,
+    UA.Patient_ID,
     UA.User_code AS Authorization_Code,
     UA.Activation AS Is_Activated,
+    P.Email AS Authorized_Email,
     P.First_name AS Patient_First_Name,
     P.Last_name AS Patient_Last_Name,
     P.Age AS Patient_Age,
@@ -34,7 +34,7 @@ SELECT
 FROM
     USER_AUTHORIZATION AS UA
         JOIN
-    PATIENTS AS P ON UA.Email = P.Email AND UA.Patient_phone_num = P.Patient_phone_num
+    PATIENTS AS P ON UA.Patient_ID = P.Patient_ID
         JOIN
     HEALTH_SUMMARY AS HS ON P.Patient_ID = HS.Patient_ID
         JOIN
@@ -44,6 +44,7 @@ ORDER BY
     P.Last_name ASC,
     P.First_name ASC,
     HS.Date DESC;
+
 
 
 
@@ -389,7 +390,7 @@ GROUP BY
 ORDER BY
     Most_Recent_Alert_Timestamp DESC;
 
--- End of Script (Nov 08, 2024)
+-- End of Script (Nov 08, 2024) **Revised according to the Revised Relational Schema Nov 21, 2024**
 
 
 

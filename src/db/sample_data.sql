@@ -3,9 +3,6 @@
 -- ***************************
 USE VitalWatchers;
 
-
-
-
 -- Sample data for PATIENTS table
 -- Summary: Inserts sample data for patients with various health conditions and statuses.
 INSERT INTO PATIENTS (First_name, Last_name, Age, Patient_phone_num, Medical_history, Patient_status, Patient_address, Gender, Email)
@@ -26,9 +23,6 @@ VALUES
     ('Brian', 'Nelson', 47, '555-6543', 'Asthma', 'Under Treatment', '1111 Birch Rd', 'Male', 'brian.nelson@example.com'),
     ('Nancy', 'Carter', 60, '555-5432', 'COPD', 'Sick', '1212 Palm Dr', 'Female', 'nancy.carter@example.com');
 
-
-
-
 -- Sample data for PROVIDERS table
 -- Summary: Inserts sample provider data, including provider names and contact numbers
 INSERT INTO PROVIDERS (First_name, Last_name, Provider_phone_no)
@@ -43,9 +37,6 @@ VALUES
     ('Dr. James', 'Wilson', '555-6677'),
     ('Dr. Maria', 'Rodriguez', '555-8899'),
     ('Dr. Andrew', 'Kim', '555-0011');
-
-
-
 
 -- Sample data for HEALTH_SUMMARY table
 -- Summary: Stores health summary records for patients, including vitals, treatments, and provider notes.
@@ -67,14 +58,10 @@ VALUES
     (14, '2024-10-14', 'OS_Low', 'Oxygen therapy', 'Improving slowly', 7),
     (15, '2024-10-14', 'BP_Critical', 'High BP treatment', 'Ongoing monitoring', 8);
 
-
-
-
-
 -- VITALS table
 -- Purpose: Stores patient vital information, including blood pressure, heart rate, body temperature,
 --          oxygen saturation, and breathing rate. Each entry is timestamped and linked to a device.
-INSERT INTO VITALS (PATIENT_ID, BLOOD_PRESSURE, HEART_RATE, BODY_TEMPERATURE, OXYGEN_SATURATION, BREATHING_RATE, TIME_STAMP, D_TRIGGER)
+INSERT INTO VITALS (Patient_ID, Blood_pressure, Heart_rate, Body_temperature, Oxygen_saturation, Breathing_rate, Time_stamp, D_trigger)
 VALUES
     (1, 120.5, 80.0, 98.6, 98.0, 16.0, '2024-10-01 08:00:00', 1),
     (2, 190.0, 90.0, 98.2, 96.0, 18.0, '2024-10-02 09:00:00', 2),
@@ -102,28 +89,22 @@ VALUES
     ('Blood Pressure', 'BP_High', 130.0, 139.0),
     ('Blood Pressure', 'BP_Very High', 140.0, 180.0),
     ('Blood Pressure', 'BP_Critical', 181.0, 250.0),
-
     ('Heart Rate', 'HR_Normal', 60.0, 100.0),
     ('Heart Rate', 'HR_Low', 30.0, 59.9),
     ('Heart Rate', 'HR_High', 101.0, 150.0),
     ('Heart Rate', 'HR_Critical', 151.0, 200.0),
-
     ('Body Temperature', 'BT_High Fever', 100.5, 103.0),
     ('Body Temperature', 'BT_Low', 89.0, 96.9),
-
     ('Oxygen Saturation', 'OS_Normal', 95.0, 100.0),
     ('Oxygen Saturation', 'OS_Low', 90.0, 94.9),
     ('Oxygen Saturation', 'OS_Critical', 80.0, 89.9),
-
     ('Breathing Rate', 'BR_High', 20.1, 30.0),
     ('Breathing Rate', 'BR_Critical', 30.1, 40.0);
-
-
 
 -- PATCH_DEVICE table
 -- Purpose: Tracks wearable patch devices for each patient, including device status,
 --          associated thresholds, and patient address for monitoring.
-INSERT INTO PATCH_DEVICE (Patient_ID, Patient_add, Vital_Status, Patch_Status, Thresholds_ID)
+INSERT INTO PATCH_DEVICE (Patient_ID, Patient_address, Vital_status, Patch_status, Thresholds_ID)
 VALUES
     (1, '123 Main St', 'BP_Normal', 'Active', 1),
     (2, '456 Elm St', 'BP_Critical', 'Active', 5),
@@ -141,12 +122,10 @@ VALUES
     (14, '1111 Birch Rd', 'OS_Low', 'Maintenance', 6),
     (15, '1212 Palm Dr', 'BP_Critical', 'Active', 5);
 
-
-
 -- ALERTS table
 -- Purpose: Records alerts generated for patients based on abnormal vital signs,
 --          including alert type, timestamp, and resolution status.
-INSERT INTO ALERTS (PATIENT_ID, ALERT_TYPE, TIME_STAMP, RESOLVED, DEVICE_ID)
+INSERT INTO ALERTS (Patient_ID, Alert_type, Time_stamp, Resolved, Device_ID)
 VALUES
     (1, 'NORMAL', '2024-10-04 10:00:00', 'F', 1),
     (2, 'CRITICAL', '2024-10-05 11:30:00', 'F', 2),
@@ -164,38 +143,31 @@ VALUES
     (14, 'HIGH', '2024-10-14 13:00:00', 'F', 14),
     (15, 'HIGH', '2024-10-14 14:00:00', 'F', 15);
 
-
-
-
-
 -- EMERGENCY_DISPATCH table
 -- Purpose: Manages dispatch records for emergency alerts, capturing details such as dispatch
 --          time, arrival time, status, and associated patient details.
-INSERT INTO EMERGENCY_DISPATCH (Patient_ID, Alert_ID, Dispatch_time, Arrival_time, Status, Notes, Patient_address)
+INSERT INTO EMERGENCY_DISPATCH (Patient_ID, Alert_ID, Dispatch_time, Arrival_time, Status, Notes)
 VALUES
-    (1, 1, '2024-10-04 10:05:00', '2024-10-04 10:30:00', 'Arrived', 'Emergency handled', '123 Main St'),
-    (2, 2, '2024-10-05 11:35:00', NULL, 'Pending', 'Awaiting dispatch', '456 Elm St'),
-    (3, 3, '2024-10-06 08:15:00', '2024-10-06 08:45:00', 'Arrived', 'Patient stabilized', '789 Maple Ave'),
-    (4, 4, '2024-10-07 07:20:00', '2024-10-07 07:45:00', 'Arrived', 'Patient transported to ER', '101 Oak St'),
-    (5, 5, '2024-10-08 06:00:00', '2024-10-08 06:25:00', 'Arrived', 'Patient received oxygen therapy', '202 Pine St'),
-    (6, 6, '2024-10-09 09:45:00', NULL, 'Pending', 'Dispatch in progress', '303 Cedar Ave'),
-    (7, 7, '2024-10-10 09:00:00', '2024-10-10 09:30:00', 'Arrived', 'Patient received medication', '404 Birch Rd'),
-    (8, 8, '2024-10-11 08:20:00', NULL, 'Pending', 'Dispatch delayed due to traffic', '505 Maple St'),
-    (9, 9, '2024-10-12 07:15:00', '2024-10-12 07:50:00', 'Arrived', 'Patient stabilized on scene', '606 Palm Dr'),
-    (10, 10, '2024-10-13 10:10:00', '2024-10-13 10:40:00', 'Arrived', 'Patient transported to hospital', '707 Spruce St'),
-    (11, 11, '2024-10-14 10:10:00', '2024-10-14 10:35:00', 'Arrived', 'Patient stabilized', '808 Oak St'),
-    (12, 12, '2024-10-14 11:15:00', '2024-10-14 11:40:00', 'Arrived', 'Critical heart rate managed', '909 Maple St'),
-    (13, 13, '2024-10-14 12:05:00', NULL, 'Pending', 'Awaiting arrival', '1010 Cedar Ave'),
-    (14, 14, '2024-10-14 13:10:00', NULL, 'Pending', 'Dispatch in progress', '1111 Birch Rd'),
-    (15, 15, '2024-10-14 14:15:00', NULL, 'Pending', 'Dispatch in progress', '1212 Palm Dr');
-
-
-
+    (1, 1, '2024-10-04 10:05:00', '2024-10-04 10:30:00', 'Arrived', 'Emergency handled'),
+    (2, 2, '2024-10-05 11:35:00', NULL, 'Pending', 'Awaiting dispatch'),
+    (3, 3, '2024-10-06 08:15:00', '2024-10-06 08:45:00', 'Arrived', 'Patient stabilized'),
+    (4, 4, '2024-10-07 07:20:00', '2024-10-07 07:45:00', 'Arrived', 'Patient transported to ER'),
+    (5, 5, '2024-10-08 06:00:00', '2024-10-08 06:25:00', 'Arrived', 'Patient received oxygen therapy'),
+    (6, 6, '2024-10-09 09:45:00', NULL, 'Pending', 'Dispatch in progress'),
+    (7, 7, '2024-10-10 09:00:00', '2024-10-10 09:30:00', 'Arrived', 'Patient received medication'),
+    (8, 8, '2024-10-11 08:20:00', NULL, 'Pending', 'Dispatch delayed due to traffic'),
+    (9, 9, '2024-10-12 07:15:00', '2024-10-12 07:50:00', 'Arrived', 'Patient stabilized on scene'),
+    (10, 10, '2024-10-13 10:10:00', '2024-10-13 10:40:00', 'Arrived', 'Patient transported to hospital'),
+    (11, 11, '2024-10-14 10:10:00', '2024-10-14 10:35:00', 'Arrived', 'Patient stabilized'),
+    (12, 12, '2024-10-14 11:15:00', '2024-10-14 11:40:00', 'Arrived', 'Critical heart rate managed'),
+    (13, 13, '2024-10-14 12:05:00', NULL, 'Pending', 'Awaiting arrival'),
+    (14, 14, '2024-10-14 13:10:00', NULL, 'Pending', 'Dispatch in progress'),
+    (15, 15, '2024-10-14 14:15:00', NULL, 'Pending', 'Dispatch in progress');
 
 -- MESSAGES table
 -- Purpose: Stores messages related to patient health status, sent by providers, with each
 --          message linked to a provider and timestamped.
-INSERT INTO MESSAGES (Message_Content, Time_Sent, Sender_ID)
+INSERT INTO MESSAGES (Message_content, Time_sent, Sender_ID)
 VALUES
     ('Patient with BP_Normal readings; patch is active and functioning normally.', '2024-10-01 08:00:00', 1),
     ('Patient experiencing BP_Critical levels; patch inactive. Urgent review required.', '2024-10-02 09:00:00', 2),
@@ -213,31 +185,26 @@ VALUES
     ('Low oxygen saturation (OS_Low); patch under maintenance. Additional monitoring required.', '2024-10-14 21:00:00', 4),
     ('Patient with BP_Critical levels; patch is active. Emergency alert sent.', '2024-10-15 22:00:00', 5);
 
-
-
 -- USER_AUTHORIZATION table
 -- Purpose: Manages user access to the system, including their email, phone number,
 --          unique access code, and activation status.
-INSERT INTO USER_AUTHORIZATION (Email, Patient_phone_num, User_code, Activation)
+INSERT INTO USER_AUTHORIZATION (Patient_ID, User_code, Activation)
 VALUES
-    ('john.doe@example.com', '555-1234', 'A1234', TRUE),
-    ('jane.smith@example.com', '555-5678', 'B5678', FALSE),
-    ('alice.johnson@example.com', '555-8765', 'C9101', TRUE),
-    ('robert.brown@example.com', '555-4321', 'D1123', TRUE),
-    ('linda.davis@example.com', '555-6543', 'E1415', FALSE),
-    ('michael.wilson@example.com', '555-2345', 'F1617', TRUE),
-    ('emily.clark@example.com', '555-7890', 'G1819', FALSE),
-    ('david.martinez@example.com', '555-3456', 'H2021', TRUE),
-    ('jessica.lee@example.com', '555-5679', 'I2223', TRUE),
-    ('daniel.taylor@example.com', '555-6789', 'J2425', FALSE),
-    ('george.anderson@example.com', '555-9876', 'K3031', TRUE),
-    ('samantha.clark@example.com', '555-8765', 'L3233', FALSE),
-    ('lisa.roberts@example.com', '555-7654', 'M3435', TRUE),
-    ('brian.nelson@example.com', '555-6543', 'N3637', FALSE),
-    ('nancy.carter@example.com', '555-5432', 'O3839', TRUE);
-
-
-
+    (1, 'A1234', TRUE),
+    (2, 'B5678', FALSE),
+    (3, 'C9101', TRUE),
+    (4, 'D1123', TRUE),
+    (5, 'E1415', FALSE),
+    (6, 'F1617', TRUE),
+    (7, 'G1819', FALSE),
+    (8, 'H2021', TRUE),
+    (9, 'I2223', TRUE),
+    (10, 'J2425', FALSE),
+    (11, 'K3031', TRUE),
+    (12, 'L3233', FALSE),
+    (13, 'M3435', TRUE),
+    (14, 'N3637', FALSE),
+    (15, 'O3839', TRUE);
 
 -- TEST_RESULTS table
 -- Purpose: Logs test results for patients, linking them with alerts and providers,
@@ -259,5 +226,3 @@ VALUES
     (13, 3, 13, 'Pending', '2024-10-13'),
     (14, 4, 14, 'Positive', '2024-10-14'),
     (15, 5, 15, 'Negative', '2024-10-15');
-
-
